@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.sqlite3
+.env
+
+# IDE
+.idea/
+
+# UI (не коммитим)
+templates/
+static/
