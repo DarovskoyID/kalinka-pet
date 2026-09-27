@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Калинка — твой менеджер задач{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/landing.css' %}">{% endblock %}
+{% block body_class %}landing{% endblock %}
+
+{% block body %}
+<header class="topbar" id="topbar">
+  {% include "partials/logo.html" %}
+  <nav class="topbar-nav">
+    <a href="#features">Преимущества</a>
+    <a href="#look">Внешний вид</a>
+    <a href="#pricing">Цены</a>
+    <a href="#authors">Создатели</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <div class="topbar-actions">
+    <a href="{% url 'login' %}" class="btn btn-ghost btn-sm">Войти</a>
+    <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Начать</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <canvas id="matrix" class="hero-matrix" aria-hidden="true"></canvas>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="dot"></span> v1.0 · открытая бета</span>
+      <h1 class="hero-title">КАЛИНКА</h1>
+      <p class="hero-sub">Твой менеджер задач<span class="caret">_</span></p>
+
+      <ul class="hero-perks">
+        <li>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+          Доски, списки и календарь — один проект, три взгляда
+        </li>
+        <li>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 5 2 12l7 2 2 7 10-16z"/></svg>
+          Напоминания прямо в Telegram
+        </li>
+        <li>
+          <svg class="icon" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Умный планировщик сам раскидает сроки
+        </li>
+      </ul>
+
+      <div class="hero-cta">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Создать аккаунт</a>
+        <a href="#features" class="btn btn-ghost btn-lg">Узнать больше</a>
+      </div>
+    </div>
+
+    <!-- кольцо прогресса: значение 60–87 обновляется раз в N минут (static/js/landing.js) -->
+    <div class="ring-card" id="ring" data-min="60" data-max="87" data-interval-min="3">
+      <svg class="ring-svg" viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#b6f09c"/>
+            <stop offset="100%" stop-color="#3ecf8e"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-track" cx="100" cy="100" r="84"/>
+        <circle class="ring-ticks" cx="100" cy="100" r="96"/>
+        <circle class="ring-value" id="ringValue" cx="100" cy="100" r="84"/>
+        <circle class="ring-comet" id="ringComet" cx="100" cy="100" r="84"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-num"><span id="ringNum">0</span><small>%</small></div>
+        <div class="ring-label">задач выполнено</div>
+      </div>
+      <p class="ring-text" id="ringText">Считаем вашу продуктивность…</p>
+      <div class="ring-foot">
+        <span class="pulse"></span> обновление через <b id="ringTimer">--:--</b>
+      </div>
+    </div>
+  </div>
+
+  <svg class="hero-wave" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,120 C320,110 520,95 700,60 C860,28 1000,10 1440,0 L1440,160 L0,160 Z"/>
+    <path class="hero-wave-line" d="M0,120 C320,110 520,95 700,60 C860,28 1000,10 1440,0"/>
+  </svg>
+
+  <a href="#features" class="scroll-hint" aria-label="Листать вниз"><span></span></a>
+</section>
+
+<!-- ============ ПАРАЛЛАКС-СЕКЦИИ ============ -->
+<nav class="rail" id="rail" aria-label="Разделы">
+  <a href="#features" data-label="Преимущества"></a>
+  <a href="#look" data-label="Внешний вид"></a>
+  <a href="#pricing" data-label="Цены"></a>
+  <a href="#authors" data-label="Создатели"></a>
+  <a href="#contacts" data-label="Контакты"></a>
+</nav>
+
+<main class="stack">
+
+  <!-- 01 Преимущества -->
+  <section class="panel panel--features" id="features">
+    <div class="panel-bgword" data-speed="-0.6">ФОКУС</div>
+    <div class="panel-inner">
+      <div class="panel-head">
+        <span class="panel-num">01 / 05</span>
+        <h2 class="panel-title">Преимущества</h2>
+        <p class="panel-lead">Всё, чтобы задачи не терялись, а команда видела одну и ту же картину.</p>
+      </div>
+      <div class="features-grid">
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3h7v18H3zM14 3h7v10h-7z"/></svg></div>
+          <h3>Канбан без лишнего</h3>
+          <p>Колонки под ваш процесс, перетаскивание карточек и счётчики на каждой колонке.</p>
+        </article>
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+          <h3>Календарь сроков</h3>
+          <p>Все дедлайны на одной сетке. Кликни на день — и задача уже создана.</p>
+        </article>
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><path d="M21 5 2 12l7 2 2 7 10-16z"/></svg></div>
+          <h3>Telegram-бот</h3>
+          <p>Утренняя сводка, напоминания и быстрые задачи прямо из мессенджера.</p>
+        </article>
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M17 11a3 3 0 1 0 0-6M22 21c0-3-2-5-5-5"/></svg></div>
+          <h3>Команда</h3>
+          <p>Назначайте исполнителей, видите кто свободен, а кто уже тонет в задачах.</p>
+        </article>
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <h3>Быстрый C++ движок</h3>
+          <p>Распределение задач считается нативным модулем — мгновенно даже на больших проектах.</p>
+        </article>
+        <article class="feature" data-reveal>
+          <div class="feature-ico"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3>REST API</h3>
+          <p>Открытое API для интеграций: подключите CI, CRM или собственные скрипты.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Внешний вид -->
+  <section class="panel panel--look" id="look">
+    <div class="panel-bgword" data-speed="0.6">ДИЗАЙН</div>
+    <div class="panel-inner look-layout">
+      <div class="panel-head">
+        <span class="panel-num">02 / 05</span>
+        <h2 class="panel-title">Внешний вид</h2>
+        <p class="panel-lead">Тёмная тема, спокойный зелёный и ничего, что отвлекает от работы.</p>
+        <ul class="look-points">
+          <li><b>Доска</b> — поток задач по колонкам</li>
+          <li><b>Список</b> — плотная таблица для разбора</li>
+          <li><b>Календарь</b> — сроки на месяц вперёд</li>
+        </ul>
+      </div>
+
+      <div class="mock" data-reveal="clip">
+        <div class="mock-bar"><i></i><i></i><i></i><span>kalinka.app / проекты / сайт</span></div>
+        <div class="mock-body">
+          <aside class="mock-side">
+            <div class="mock-line w70 hl"></div>
+            <div class="mock-line w50"></div>
+            <div class="mock-line w60"></div>
+            <div class="mock-sep"></div>
+            <div class="mock-line w40"></div>
+            <div class="mock-line w55"></div>
+          </aside>
+          <div class="mock-board">
+            <div class="mock-col">
+              <div class="mock-col-h">К выполнению <em>3</em></div>
+              <div class="mock-card"><span class="tag tag-sky"></span><div class="mock-line w80"></div><div class="mock-line w50"></div></div>
+              <div class="mock-card"><span class="tag tag-amber"></span><div class="mock-line w60"></div></div>
+              <div class="mock-card"><div class="mock-line w70"></div><div class="mock-line w40"></div></div>
+            </div>
+            <div class="mock-col">
+              <div class="mock-col-h">В работе <em>2</em></div>
+              <div class="mock-card float"><span class="tag tag-violet"></span><div class="mock-line w90"></div><div class="mock-line w60"></div></div>
+              <div class="mock-card"><div class="mock-line w50"></div></div>
+            </div>
+            <div class="mock-col">
+              <div class="mock-col-h">Готово <em>4</em></div>
+              <div class="mock-card done"><div class="mock-line w70"></div></div>
+              <div class="mock-card done"><div class="mock-line w50"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Цены -->
+  <section class="panel panel--pricing" id="pricing">
+    <div class="panel-bgword" data-speed="-0.6">ТАРИФЫ</div>
+    <div class="panel-inner">
+      <div class="panel-head center">
+        <span class="panel-num">03 / 05</span>
+        <h2 class="panel-title">Цены на услуги</h2>
+        <p class="panel-lead">Начните бесплатно. Платите, когда вырастете.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="price" data-reveal>
+          <h3>Росток</h3>
+          <div class="price-val">0 ₽<small>/ навсегда</small></div>
+          <ul>
+            <li>До 3 проектов</li>
+            <li>Доска, список, календарь</li>
+            <li>1 исполнитель</li>
+          </ul>
+          <a href="{% url 'register' %}" class="btn btn-ghost btn-block">Попробовать</a>
+        </article>
+        <article class="price price--hot" data-reveal>
+          <span class="price-badge">Популярный</span>
+          <h3>Гроздь</h3>
+          <div class="price-val">290 ₽<small>/ мес</small></div>
+          <ul>
+            <li>Безлимит проектов</li>
+            <li>Telegram-напоминания</li>
+            <li>До 10 участников</li>
+            <li>Умное распределение задач</li>
+          </ul>
+          <a href="{% url 'register' %}" class="btn btn-primary btn-block">Выбрать</a>
+        </article>
+        <article class="price" data-reveal>
+          <h3>Сад</h3>
+          <div class="price-val">990 ₽<small>/ мес</small></div>
+          <ul>
+            <li>Всё из «Грозди»</li>
+            <li>Безлимит участников</li>
+            <li>REST API и вебхуки</li>
+            <li>Приоритетная поддержка</li>
+          </ul>
+          <a href="#contacts" class="btn btn-ghost btn-block">Связаться</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Создатели -->
+  <section class="panel panel--authors" id="authors">
+    <div class="panel-bgword" data-speed="0.6">АВТОР</div>
+    <div class="panel-inner authors-layout">
+      <div class="panel-head">
+        <span class="panel-num">04 / 05</span>
+        <h2 class="panel-title">Создатели</h2>
+        <p class="panel-lead">Калинка сделана одним человеком — от базы данных до последнего пикселя.</p>
+      </div>
+      <article class="author" data-reveal>
+        <div class="author-avatar"><span>ИД</span></div>
+        <div class="author-body">
+          <h3>Даровской Иван Даниилович</h3>
+          <p class="author-role">Автор и разработчик · Django · C++</p>
+          <p>Спроектировал архитектуру, написал бэкенд, движок распределения задач и Telegram-интеграцию.</p>
+          <a class="btn btn-ghost" href="https://t.me/bottomWeb" target="_blank" rel="noopener">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 5 2 12l7 2 2 7 10-16z"/></svg>
+            @bottomWeb
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 05 Контакты -->
+  <section class="panel panel--contacts" id="contacts">
+    <div class="panel-bgword" data-speed="-0.6">СВЯЗЬ</div>
+    <div class="panel-inner contacts-layout">
+      <div class="panel-head">
+        <span class="panel-num">05 / 05</span>
+        <h2 class="panel-title">Контакты</h2>
+        <p class="panel-lead">Идея, баг или предложение — пишите, отвечаем быстро.</p>
+        <a class="contact-big" href="https://t.me/bottomWeb" target="_blank" rel="noopener">t.me/bottomWeb <span>↗</span></a>
+      </div>
+
+      <form class="contact-form" method="post" action="#" data-reveal>
+        {% csrf_token %}
+        <label class="field">
+          <span>Имя</span>
+          <input class="input" type="text" name="name" placeholder="Как к вам обращаться">
+        </label>
+        <label class="field">
+          <span>Telegram или e-mail</span>
+          <input class="input" type="text" name="contact" placeholder="@username">
+        </label>
+        <label class="field">
+          <span>Сообщение</span>
+          <textarea class="input" name="message" rows="4" placeholder="Расскажите, что хотите обсудить"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Отправить</button>
+      </form>
+    </div>
+
+    <footer class="footer">
+      <span>© 2026 Калинка</span>
+      <span>Даровской Иван Даниилович · <a href="https://t.me/bottomWeb" target="_blank" rel="noopener">@bottomWeb</a></span>
+    </footer>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/matrix.js' %}"></script>
+<script src="{% static 'js/landing.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Календарь — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Календарь</h1>
+  <p>Сроки всех ваших проектов</p>
+</div>
+<div class="topline-actions">
+  <div class="legend">
+    <span><i style="--c: var(--green)"></i>Сайт</span>
+    <span><i style="--c: var(--sky)"></i>Бот</span>
+    <span><i style="--c: var(--amber)"></i>Движок</span>
+  </div>
+  <button class="btn btn-primary" data-open="taskModal">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+{% include "partials/calendar_grid.html" %}
+{% endblock %}

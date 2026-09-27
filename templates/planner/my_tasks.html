@@ -1,0 +1,116 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Мои задачи — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Мои задачи</h1>
+  <p>Воскресенье, 27 сентября</p>
+</div>
+<div class="topline-actions">
+  <div class="segmented" role="tablist">
+    <button class="is-active">Все</button>
+    <button>Активные</button>
+    <button>Готовые</button>
+  </div>
+  <button class="btn btn-primary" data-open="taskModal">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<section class="stats">
+  <div class="stat"><small>Сегодня</small><b>3</b><span>задачи со сроком</span></div>
+  <div class="stat stat--warn"><small>Просрочено</small><b>1</b><span>нужно внимание</span></div>
+  <div class="stat"><small>В работе</small><b>4</b><span>по 3 проектам</span></div>
+  <div class="stat stat--ok"><small>Закрыто за неделю</small><b>18</b><span>+5 к прошлой</span></div>
+</section>
+
+<!-- группа -->
+<section class="group">
+  <header class="group-head"><span class="dot dot--red"></span>Просрочено <em>1</em></header>
+  <ul class="rows">
+    <li class="row">
+      <label class="check-round"><input type="checkbox"><i></i></label>
+      <div class="row-main">
+        <b>Сверстать страницу тарифов</b>
+        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
+      </div>
+      <span class="chip chip--high">Высокий</span>
+      <span class="due due--late">25 сен</span>
+      <span class="avatar avatar--sm">ИД</span>
+    </li>
+  </ul>
+</section>
+
+<section class="group">
+  <header class="group-head"><span class="dot dot--green"></span>Сегодня <em>3</em></header>
+  <ul class="rows">
+    <li class="row">
+      <label class="check-round"><input type="checkbox"><i></i></label>
+      <div class="row-main">
+        <b>Команда /today для бота</b>
+        <small><i class="proj" style="--c: var(--sky)"></i>Telegram-бот · 2/5 подзадач</small>
+      </div>
+      <span class="chip chip--mid">Средний</span>
+      <span class="due">Сегодня</span>
+      <span class="avatar avatar--sm">ИД</span>
+    </li>
+    <li class="row">
+      <label class="check-round"><input type="checkbox"><i></i></label>
+      <div class="row-main">
+        <b>Ревью модели Task</b>
+        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
+      </div>
+      <span class="chip chip--low">Низкий</span>
+      <span class="due">Сегодня</span>
+      <span class="avatar avatar--sm" style="--a: var(--violet)">АК</span>
+    </li>
+    <li class="row is-done">
+      <label class="check-round"><input type="checkbox" checked><i></i></label>
+      <div class="row-main">
+        <b>Настроить docker compose</b>
+        <small><i class="proj" style="--c: var(--amber)"></i>C++ движок</small>
+      </div>
+      <span class="chip chip--mid">Средний</span>
+      <span class="due">Сегодня</span>
+      <span class="avatar avatar--sm">ИД</span>
+    </li>
+  </ul>
+</section>
+
+<section class="group">
+  <header class="group-head"><span class="dot dot--sky"></span>На этой неделе <em>2</em></header>
+  <ul class="rows">
+    <li class="row">
+      <label class="check-round"><input type="checkbox"><i></i></label>
+      <div class="row-main">
+        <b>Алгоритм распределения задач по свободным исполнителям</b>
+        <small><i class="proj" style="--c: var(--amber)"></i>C++ движок</small>
+      </div>
+      <span class="chip chip--high">Высокий</span>
+      <span class="due">30 сен</span>
+      <span class="avatar avatar--sm">ИД</span>
+    </li>
+    <li class="row">
+      <label class="check-round"><input type="checkbox"><i></i></label>
+      <div class="row-main">
+        <b>REST: эндпоинт списка задач</b>
+        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
+      </div>
+      <span class="chip chip--mid">Средний</span>
+      <span class="due">2 окт</span>
+      <span class="avatar avatar--sm" style="--a: var(--sky)">ОМ</span>
+    </li>
+  </ul>
+</section>
+
+<!-- пустое состояние: показывать, когда задач нет -->
+<div class="empty" hidden>
+  <div class="empty-ico"><svg class="icon" viewBox="0 0 24 24"><path d="m3 6 2 2 4-4M3 14l2 2 4-4M13 6h8M13 14h8"/></svg></div>
+  <h3>На вас нет задач</h3>
+  <p>Задачи, назначенные на вас в любом проекте, соберутся здесь по срокам.</p>
+  <button class="btn btn-primary" data-open="taskModal">Создать первую</button>
+</div>
+{% endblock %}

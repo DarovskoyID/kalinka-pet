@@ -1,0 +1,39 @@
+{% extends "auth/base_auth.html" %}
+
+{% block title %}Вход — Калинка{% endblock %}
+{% block tab_login %}is-active{% endblock %}
+
+{% block card %}
+<h2 class="auth-h">С возвращением</h2>
+<p class="auth-sub">Войдите, чтобы продолжить</p>
+
+<form method="post" action="{% url 'login' %}" class="auth-form">
+  {% csrf_token %}
+  <label class="float-field">
+    <span>Логин</span>
+    <input type="text" name="username" autocomplete="username" placeholder="username" required>
+  </label>
+  <label class="float-field">
+    <span>Пароль</span>
+    <input type="password" name="password" autocomplete="current-password" placeholder="••••••••" required>
+    <button type="button" class="eye" data-toggle-password aria-label="Показать пароль">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </label>
+
+  <div class="auth-row">
+    <label class="check"><input type="checkbox" name="remember" checked><i></i>Запомнить меня</label>
+    <a href="#" class="auth-link">Забыли пароль?</a>
+  </div>
+
+  <!-- ошибка: убрать hidden, когда форма невалидна -->
+  <div class="auth-error" hidden>Неверный логин или пароль.</div>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Войти</button>
+</form>
+
+<div class="auth-or"><span>или</span></div>
+<a href="#" class="btn btn-ghost btn-block">
+  <svg class="icon" viewBox="0 0 24 24"><path d="M21 5 2 12l7 2 2 7 10-16z"/></svg>Войти через Telegram
+</a>
+{% endblock %}

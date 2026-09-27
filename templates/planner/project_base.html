@@ -1,0 +1,46 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Сайт «Калинка» — Калинка{% endblock %}
+
+{% block topline %}
+<div class="project-title">
+  <i class="proj proj--lg" style="--c: var(--green)"></i>
+  <h1>Сайт «Калинка»</h1>
+  <button class="icon-btn" aria-label="Настройки проекта"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+</div>
+
+{% with u=request.resolver_match.url_name %}
+<nav class="segmented views">
+  <a href="{% url 'project_board' project_id %}" class="{% if u == 'project_board' %}is-active{% endif %}">
+    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></svg>Доска
+  </a>
+  <a href="{% url 'project_list' project_id %}" class="{% if u == 'project_list' %}is-active{% endif %}">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Список
+  </a>
+  <a href="{% url 'project_calendar' project_id %}" class="{% if u == 'project_calendar' %}is-active{% endif %}">
+    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Календарь
+  </a>
+</nav>
+{% endwith %}
+
+<div class="topline-actions">
+  <label class="search">
+    <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" placeholder="Поиск задач" data-filter-search>
+  </label>
+  <select class="input input--sm" data-filter-priority aria-label="Приоритет">
+    <option value="">Любой приоритет</option>
+    <option value="high">Высокий</option>
+    <option value="mid">Средний</option>
+    <option value="low">Низкий</option>
+  </select>
+  <div class="avatars">
+    <span class="avatar avatar--sm">ИД</span>
+    <span class="avatar avatar--sm" style="--a: var(--violet)">АК</span>
+    <span class="avatar avatar--sm" style="--a: var(--sky)">ОМ</span>
+  </div>
+  <button class="btn btn-primary" data-open="taskModal">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Задача
+  </button>
+</div>
+{% endblock %}

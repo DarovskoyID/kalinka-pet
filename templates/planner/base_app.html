@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}<link rel="stylesheet" href="{% static 'css/app.css' %}">{% endblock %}
+{% block body_class %}app{% endblock %}
+
+{% block body %}
+<div class="shell">
+
+  <!-- ============ сайдбар ============ -->
+  <aside class="side" id="side">
+    <div class="side-top">
+      {% include "partials/logo.html" %}
+      <button class="icon-btn side-collapse" data-toggle-side aria-label="Свернуть меню">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg>
+      </button>
+    </div>
+
+    <label class="side-search">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Поиск" aria-label="Поиск">
+      <kbd>/</kbd>
+    </label>
+
+    <nav class="side-nav">
+      {% with u=request.resolver_match.url_name %}
+      <a href="{% url 'my_tasks' %}" class="side-link {% if u == 'my_tasks' %}is-active{% endif %}">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m3 6 2 2 4-4M3 14l2 2 4-4M13 6h8M13 14h8M13 20h8"/></svg>
+        Мои задачи <span class="side-count">7</span>
+      </a>
+      <a href="{% url 'calendar' %}" class="side-link {% if u == 'calendar' %}is-active{% endif %}">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        Календарь
+      </a>
+      {% endwith %}
+    </nav>
+
+    <div class="side-section">
+      <span>Проекты</span>
+      <button class="icon-btn" data-open="projectModal" aria-label="Новый проект">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+
+    <nav class="side-projects">
+      <a href="{% url 'project_board' 1 %}" class="side-project {% if project_id == 1 %}is-active{% endif %}">
+        <i style="--c: var(--green)"></i><span>Сайт «Калинка»</span><em>12</em>
+      </a>
+      <a href="{% url 'project_board' 2 %}" class="side-project {% if project_id == 2 %}is-active{% endif %}">
+        <i style="--c: var(--sky)"></i><span>Telegram-бот</span><em>5</em>
+      </a>
+      <a href="{% url 'project_board' 3 %}" class="side-project {% if project_id == 3 %}is-active{% endif %}">
+        <i style="--c: var(--amber)"></i><span>C++ движок</span><em>3</em>
+      </a>
+    </nav>
+
+    <div class="side-bottom">
+      <div class="side-progress">
+        <div class="side-progress-top"><span>Неделя</span><b>72%</b></div>
+        <div class="bar"><i style="width: 72%"></i></div>
+        <small>18 из 25 задач закрыто</small>
+      </div>
+      <div class="me">
+        <span class="avatar">ИД</span>
+        <div class="me-info"><b>Иван Даровской</b><small>@bottomWeb</small></div>
+        <a href="{% url 'logout' %}" class="icon-btn" aria-label="Выйти">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ контент ============ -->
+  <div class="main">
+    <header class="topline">
+      <button class="icon-btn side-open" data-toggle-side aria-label="Меню">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      {% block topline %}{% endblock %}
+    </header>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<!-- ============ модалка: новая задача ============ -->
+<div class="modal" id="taskModal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <form class="modal-card" method="post" action="#">
+    {% csrf_token %}
+    <div class="modal-head">
+      <h3>Новая задача</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <input class="modal-title-input" name="title" placeholder="Что нужно сделать?" required>
+    <textarea class="input" name="description" rows="3" placeholder="Описание, ссылки, детали…"></textarea>
+    <div class="modal-grid">
+      <label class="field"><span>Проект</span>
+        <select class="input" name="project">
+          <option value="1">Сайт «Калинка»</option>
+          <option value="2">Telegram-бот</option>
+          <option value="3">C++ движок</option>
+        </select>
+      </label>
+      <label class="field"><span>Статус</span>
+        <select class="input" name="status">
+          <option value="created">Создана</option>
+          <option value="active">В работе</option>
+          <option value="inactive">На паузе</option>
+          <option value="complete">Готово</option>
+        </select>
+      </label>
+      <label class="field"><span>Начало</span><input class="input" type="date" name="start_date"></label>
+      <label class="field"><span>Срок</span><input class="input" type="date" name="end_date"></label>
+      <label class="field"><span>Приоритет</span>
+        <select class="input" name="priority">
+          <option value="low">Низкий</option>
+          <option value="mid" selected>Средний</option>
+          <option value="high">Высокий</option>
+        </select>
+      </label>
+      <label class="field"><span>Исполнители</span>
+        <select class="input" name="workers" multiple size="1">
+          <option value="1" selected>Иван Даровской</option>
+          <option value="2">Анна К.</option>
+          <option value="3">Олег М.</option>
+        </select>
+      </label>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-close>Отмена</button>
+      <button type="submit" class="btn btn-primary">Создать задачу</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ модалка: новый проект ============ -->
+<div class="modal" id="projectModal" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <form class="modal-card modal-card--sm" method="post" action="#">
+    {% csrf_token %}
+    <div class="modal-head">
+      <h3>Новый проект</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <label class="field"><span>Название</span><input class="input" name="name" placeholder="Например, «Ремонт»" required></label>
+    <div class="field"><span>Цвет</span>
+      <div class="swatches">
+        <label><input type="radio" name="color" value="green" checked><i style="--c: var(--green)"></i></label>
+        <label><input type="radio" name="color" value="sky"><i style="--c: var(--sky)"></i></label>
+        <label><input type="radio" name="color" value="amber"><i style="--c: var(--amber)"></i></label>
+        <label><input type="radio" name="color" value="violet"><i style="--c: var(--violet)"></i></label>
+        <label><input type="radio" name="color" value="red"><i style="--c: var(--red)"></i></label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-close>Отмена</button>
+      <button type="submit" class="btn btn-primary">Создать</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}<script src="{% static 'js/app.js' %}"></script>{% endblock %}

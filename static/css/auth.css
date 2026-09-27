@@ -1,0 +1,101 @@
+/* ===== Вход / регистрация ===== */
+.auth { min-height: 100vh; overflow-x: hidden; background: #050c09; }
+
+.auth-scene { position: fixed; inset: 0; z-index: 0; }
+.scene { width: 100%; height: 100%; }
+.scene .layer { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.scene .moon { filter: drop-shadow(0 0 40px rgba(205, 238, 221, .4)); }
+.scene .stars circle { animation: twinkle 3s infinite ease-in-out; }
+.scene .stars circle:nth-child(2n) { animation-delay: 1.2s; }
+.scene .stars circle:nth-child(3n) { animation-delay: 2s; }
+@keyframes twinkle { 50% { opacity: .25; } }
+.scene .birds { animation: fly 14s ease-in-out infinite alternate; }
+@keyframes fly { to { transform: translate(60px, -20px); } }
+
+.auth-wrap {
+  position: relative; z-index: 1;
+  min-height: 100vh; max-width: 1180px; margin: 0 auto; padding: 40px;
+  display: grid; grid-template-columns: 1fr 440px; gap: 80px; align-items: center;
+}
+
+.auth-promo { max-width: 480px; animation: rise .8s both; }
+.auth-title { margin: 28px 0 16px; font-size: clamp(34px, 4vw, 50px); line-height: 1.05; font-weight: 800; letter-spacing: -.03em; }
+.auth-title span { background: linear-gradient(90deg, var(--green), var(--lime)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.auth-lead { margin: 0 0 30px; color: var(--text-2); font-size: 16px; }
+.auth-perks { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.auth-perks li { display: flex; gap: 12px; align-items: center; color: var(--text-2); font-size: 14px; }
+.auth-perks .icon { color: var(--green); }
+
+.auth-card {
+  padding: 30px; border-radius: 24px;
+  background: rgba(14, 22, 18, .82); backdrop-filter: blur(18px);
+  border: 1px solid rgba(62, 207, 142, .16);
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, .9), inset 0 1px 0 rgba(255,255,255,.05);
+  animation: rise .8s .1s both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 12px; background: var(--bg-2); border: 1px solid var(--line); margin-bottom: 28px; }
+.auth-tabs a { height: 40px; display: grid; place-items: center; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--text-3); transition: .2s; }
+.auth-tabs a:hover { color: var(--text); }
+.auth-tabs a.is-active { background: var(--surface-3); color: var(--text); box-shadow: 0 4px 12px -4px rgba(0,0,0,.6); }
+
+.auth-h { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+.auth-sub { margin: 4px 0 24px; color: var(--text-2); font-size: 14px; }
+
+.auth-form { display: grid; gap: 12px; }
+.auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* поле с подписью внутри, как у «Сферы», но в зелёной теме */
+.float-field {
+  position: relative; display: block;
+  padding: 8px 14px 8px; border-radius: 12px;
+  background: var(--bg-2); border: 1px solid var(--line);
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.float-field:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); background: #0f1a15; }
+.float-field > span { display: block; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+.float-field:focus-within > span { color: var(--green); }
+.float-field input { width: 100%; border: 0; outline: 0; background: transparent; padding: 2px 0 0; font-size: 15px; }
+.float-field input::placeholder { color: #3f5249; }
+.float-field .eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); padding: 6px; color: var(--text-3); border-radius: 8px; }
+.float-field .eye:hover { color: var(--text); background: var(--surface-2); }
+
+.strength { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: -4px; }
+.strength i { height: 4px; border-radius: 2px; background: var(--surface-3); transition: background .3s; }
+.strength[data-score="1"] i:nth-child(-n+1) { background: var(--red); }
+.strength[data-score="2"] i:nth-child(-n+2) { background: var(--amber); }
+.strength[data-score="3"] i:nth-child(-n+3) { background: var(--lime); }
+.strength[data-score="4"] i { background: var(--green); }
+
+.auth-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin: 2px 0 4px; }
+.auth-link { color: var(--green); font-weight: 600; }
+.auth-link:hover { text-decoration: underline; }
+
+.check { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); cursor: pointer; }
+.check input { position: absolute; opacity: 0; pointer-events: none; }
+.check i { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--line-2); display: grid; place-items: center; transition: .2s; }
+.check input:checked + i { background: var(--green); border-color: var(--green); }
+.check input:checked + i::after { content: ""; width: 5px; height: 9px; border: solid #04130c; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+
+.auth-error { padding: 11px 14px; border-radius: 10px; font-size: 13px; color: #ffb4b4; background: rgba(242, 109, 109, .1); border: 1px solid rgba(242, 109, 109, .35); }
+.auth-error[hidden] { display: none; }
+
+.auth-or { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--text-3); font-size: 12px; }
+.auth-or::before, .auth-or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.auth-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.auth-foot select { width: auto; height: 36px; padding-top: 0; padding-bottom: 0; font-size: 13px; }
+.auth-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-2); }
+.auth-back:hover { color: var(--green); }
+.auth-back .icon { width: 16px; height: 16px; }
+
+@media (max-width: 960px) {
+  .auth-wrap { grid-template-columns: 1fr; gap: 36px; padding: 32px 16px; }
+  .auth-promo { max-width: none; }
+  .auth-perks { display: none; }
+}
+@media (max-width: 480px) {
+  .auth-card { padding: 22px 18px; }
+  .auth-grid { grid-template-columns: 1fr; }
+}

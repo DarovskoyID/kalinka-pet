@@ -1,0 +1,66 @@
+{% extends "planner/project_base.html" %}
+
+{% block content %}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="w-check"></th>
+        <th>Задача</th>
+        <th>Статус</th>
+        <th>Приоритет</th>
+        <th>Начало</th>
+        <th>Срок</th>
+        <th>Исполнители</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-priority="high">
+        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
+        <td><b>Сверстать страницу тарифов</b></td>
+        <td><span class="status status--created">Создана</span></td>
+        <td><span class="chip chip--high">Высокий</span></td>
+        <td>20 сен</td>
+        <td><span class="due due--late">25 сен</span></td>
+        <td><span class="avatar avatar--xs">ИД</span></td>
+      </tr>
+      <tr data-priority="mid">
+        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
+        <td><b>Ревью модели Task</b></td>
+        <td><span class="status status--active">В работе</span></td>
+        <td><span class="chip chip--mid">Средний</span></td>
+        <td>24 сен</td>
+        <td><span class="due">Сегодня</span></td>
+        <td><div class="avatars"><span class="avatar avatar--xs" style="--a: var(--violet)">АК</span><span class="avatar avatar--xs">ИД</span></div></td>
+      </tr>
+      <tr data-priority="high">
+        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
+        <td><b>Лендинг: параллакс секций</b></td>
+        <td><span class="status status--active">В работе</span></td>
+        <td><span class="chip chip--high">Высокий</span></td>
+        <td>26 сен</td>
+        <td><span class="due">28 сен</span></td>
+        <td><span class="avatar avatar--xs">ИД</span></td>
+      </tr>
+      <tr data-priority="mid">
+        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
+        <td><b>REST: эндпоинт списка задач</b></td>
+        <td><span class="status status--inactive">На паузе</span></td>
+        <td><span class="chip chip--mid">Средний</span></td>
+        <td>28 сен</td>
+        <td><span class="due">2 окт</span></td>
+        <td><span class="avatar avatar--xs" style="--a: var(--sky)">ОМ</span></td>
+      </tr>
+      <tr class="is-done" data-priority="mid">
+        <td><label class="check-round"><input type="checkbox" checked><i></i></label></td>
+        <td><b>Модель пользователя</b></td>
+        <td><span class="status status--complete">Готово</span></td>
+        <td><span class="chip chip--mid">Средний</span></td>
+        <td>1 сен</td>
+        <td><span class="due">8 сен</span></td>
+        <td><span class="avatar avatar--xs">ИД</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

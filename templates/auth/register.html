@@ -1,0 +1,55 @@
+{% extends "auth/base_auth.html" %}
+
+{% block title %}Регистрация — Калинка{% endblock %}
+{% block tab_register %}is-active{% endblock %}
+
+{% block card %}
+<h2 class="auth-h">Создать аккаунт</h2>
+<p class="auth-sub">Пара полей — и можно планировать</p>
+
+<form method="post" action="{% url 'register' %}" class="auth-form">
+  {% csrf_token %}
+  <div class="auth-grid">
+    <label class="float-field">
+      <span>Логин</span>
+      <input type="text" name="username" autocomplete="username" placeholder="ivan" required>
+    </label>
+    <label class="float-field">
+      <span>Telegram</span>
+      <input type="text" name="telegram_id" placeholder="@username">
+    </label>
+  </div>
+  <label class="float-field">
+    <span>E-mail</span>
+    <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+  </label>
+  <label class="float-field">
+    <span>Пароль</span>
+    <input type="password" name="password1" id="pwd" autocomplete="new-password" placeholder="Минимум 8 символов" required>
+    <button type="button" class="eye" data-toggle-password aria-label="Показать пароль">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </label>
+  <div class="strength" id="strength" data-score="0"><i></i><i></i><i></i><i></i></div>
+  <label class="float-field">
+    <span>Повторите пароль</span>
+    <input type="password" name="password2" autocomplete="new-password" placeholder="••••••••" required>
+  </label>
+
+  <label class="check"><input type="checkbox" name="agree" required><i></i>Принимаю <a href="#" class="auth-link">условия использования</a></label>
+
+  <div class="auth-error" hidden>Пароли не совпадают.</div>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Зарегистрироваться</button>
+</form>
+
+<script>
+  (function () {
+    const pwd = document.getElementById("pwd"), bar = document.getElementById("strength");
+    pwd.addEventListener("input", () => {
+      const v = pwd.value;
+      bar.dataset.score = [v.length >= 8, /[A-ZА-Я]/.test(v), /\d/.test(v), /[^\wА-Яа-яЁё]/.test(v)].filter(Boolean).length;
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "planner/project_base.html" %}
+
+{% block content %}
+<div class="board" id="board">
+
+  <section class="col" data-col>
+    <header class="col-head">
+      <span class="col-state"></span>
+      <h3>К выполнению</h3>
+      <em class="col-count">3</em>
+      <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+    </header>
+    <div class="col-body" data-dropzone>
+      <article class="card" draggable="true" data-priority="high">
+        <div class="card-tags"><span class="chip chip--high">Высокий</span><span class="chip">вёрстка</span></div>
+        <h4>Сверстать страницу тарифов</h4>
+        <footer class="card-foot"><span class="due due--late">25 сен</span><span class="avatar avatar--xs">ИД</span></footer>
+      </article>
+      <article class="card" draggable="true" data-priority="mid">
+        <div class="card-tags"><span class="chip chip--mid">Средний</span></div>
+        <h4>REST: эндпоинт списка задач</h4>
+        <p>GET /api/tasks с фильтрами по статусу и исполнителю</p>
+        <footer class="card-foot"><span class="due">2 окт</span><span class="avatar avatar--xs" style="--a: var(--sky)">ОМ</span></footer>
+      </article>
+      <article class="card" draggable="true" data-priority="low">
+        <h4>Иконки для пустых состояний</h4>
+        <footer class="card-foot"><span class="due">5 окт</span></footer>
+      </article>
+    </div>
+    <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>
+  </section>
+
+  <section class="col" data-col>
+    <header class="col-head">
+      <span class="col-state col-state--active"></span>
+      <h3>В работе</h3>
+      <em class="col-count">2</em>
+      <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+    </header>
+    <div class="col-body" data-dropzone>
+      <article class="card" draggable="true" data-priority="mid">
+        <div class="card-tags"><span class="chip chip--mid">Средний</span><span class="chip">backend</span></div>
+        <h4>Ревью модели Task</h4>
+        <div class="card-progress"><div class="bar"><i style="width: 60%"></i></div><small>3/5</small></div>
+        <footer class="card-foot"><span class="due">Сегодня</span><span class="avatar avatar--xs" style="--a: var(--violet)">АК</span></footer>
+      </article>
+      <article class="card" draggable="true" data-priority="high">
+        <div class="card-tags"><span class="chip chip--high">Высокий</span></div>
+        <h4>Лендинг: параллакс секций</h4>
+        <footer class="card-foot"><span class="due">28 сен</span><span class="avatar avatar--xs">ИД</span></footer>
+      </article>
+    </div>
+    <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>
+  </section>
+
+  <section class="col" data-col>
+    <header class="col-head">
+      <span class="col-state col-state--done"><svg class="icon" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></svg></span>
+      <h3>Готово</h3>
+      <em class="col-count">2</em>
+      <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+    </header>
+    <div class="col-body" data-dropzone>
+      <article class="card is-done" draggable="true" data-priority="mid">
+        <h4>Модель пользователя</h4>
+        <footer class="card-foot"><span class="due">8 сен</span><span class="avatar avatar--xs">ИД</span></footer>
+      </article>
+      <article class="card is-done" draggable="true" data-priority="low">
+        <h4>Настроить docker compose</h4>
+        <footer class="card-foot"><span class="due">27 сен</span><span class="avatar avatar--xs">ИД</span></footer>
+      </article>
+    </div>
+    <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>
+  </section>
+
+  <form class="col-new" method="post" action="#">
+    {% csrf_token %}
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    <input name="column_name" placeholder="Добавить колонку">
+  </form>
+</div>
+{% endblock %}

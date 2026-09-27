@@ -10,5 +10,3 @@ venv/
 .idea/
 
 # UI (не коммитим)
-templates/
-static/

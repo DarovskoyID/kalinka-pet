@@ -1,0 +1,27 @@
+<!-- Сетка месяца. Ячейки строит static/js/app.js; события — data-events (JSON), позже можно отдать из вьюхи -->
+<div class="cal" id="calendar"
+     data-events='[
+       {"d": "2026-09-02", "t": "Созвон по дизайну", "c": "sky"},
+       {"d": "2026-09-08", "t": "Модель пользователя", "c": "green"},
+       {"d": "2026-09-14", "t": "Бот: /start", "c": "sky"},
+       {"d": "2026-09-14", "t": "Docker", "c": "amber"},
+       {"d": "2026-09-18", "t": "Лендинг", "c": "green"},
+       {"d": "2026-09-25", "t": "Страница тарифов", "c": "red"},
+       {"d": "2026-09-27", "t": "Команда /today", "c": "sky"},
+       {"d": "2026-09-27", "t": "Ревью Task", "c": "green"},
+       {"d": "2026-09-30", "t": "Алгоритм распределения", "c": "amber"},
+       {"d": "2026-10-02", "t": "REST: список задач", "c": "green"}
+     ]'>
+  <div class="cal-head">
+    <div class="cal-nav">
+      <button class="icon-btn" data-cal="prev" aria-label="Предыдущий месяц"><svg class="icon" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <h2 class="cal-title" id="calTitle">Сентябрь 2026</h2>
+      <button class="icon-btn" data-cal="next" aria-label="Следующий месяц"><svg class="icon" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <button class="btn btn-ghost btn-sm" data-cal="today">Сегодня</button>
+  </div>
+  <div class="cal-week">
+    <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+</div>
