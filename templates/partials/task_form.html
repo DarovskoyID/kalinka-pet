@@ -1,0 +1,69 @@
+{# Поля формы новой задачи. Ожидает в контексте: form (TaskForm), next (куда вернуться после сохранения) #}
+{% csrf_token %}
+<input type="hidden" name="next" value="{{ next }}">
+
+{% if form.non_field_errors %}
+  <div class="form-error">{% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}</div>
+{% endif %}
+
+<div class="form-row">
+  {{ form.title }}
+  {% for e in form.title.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</div>
+
+<div class="form-row">
+  {{ form.description }}
+  {% for e in form.description.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</div>
+
+<div class="modal-grid">
+  <label class="field">
+    <span>Проект</span>
+    {{ form.project }}
+    {% for e in form.project.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+  </label>
+  <label class="field">
+    <span>Статус</span>
+    {{ form.status }}
+    {% for e in form.status.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+  </label>
+  <label class="field">
+    <span>Начало</span>
+    {{ form.start_date }}
+    {% for e in form.start_date.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+  </label>
+  <label class="field">
+    <span>Срок</span>
+    {{ form.end_date }}
+    {% for e in form.end_date.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+  </label>
+</div>
+
+<div class="field">
+  <span>Приоритет</span>
+  <div class="pills">
+    {% for radio in form.priority %}
+      <label class="pill pill--{{ radio.data.value }}">
+        <input type="radio" name="{{ form.priority.html_name }}" value="{{ radio.data.value }}" {% if radio.data.selected %}checked{% endif %}>
+        <span>{{ radio.choice_label }}</span>
+      </label>
+    {% endfor %}
+  </div>
+  {% for e in form.priority.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</div>
+
+<div class="field">
+  <span>Исполнители</span>
+  <div class="workers">
+    {% for cb in form.workers %}
+      <label class="worker">
+        <input type="checkbox" name="{{ form.workers.html_name }}" value="{{ cb.data.value }}" {% if cb.data.selected %}checked{% endif %}>
+        <span class="avatar avatar--xs">{{ cb.choice_label|slice:":1"|upper }}</span>
+        <span class="worker-name">{{ cb.choice_label }}</span>
+      </label>
+    {% empty %}
+      <small class="muted">Пользователей пока нет</small>
+    {% endfor %}
+  </div>
+  {% for e in form.workers.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</div>

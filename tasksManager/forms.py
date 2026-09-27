@@ -1,0 +1,57 @@
+from django import forms
+from django.contrib.auth import get_user_model
+
+from tasksManager.models import Project, Task
+
+# В моделях статусы/приоритеты заданы как {"ключ": число}, поэтому
+# человекочитаемые подписи для селектов задаём здесь.
+STATUS_CHOICES = [
+    ("created", "Создана"),
+    ("active", "В работе"),
+    ("inactive", "На паузе"),
+    ("complete", "Готово"),
+]
+
+PRIORITY_CHOICES = [
+    ("low", "Низкий"),
+    ("medium", "Средний"),
+    ("high", "Высокий"),
+]
+
+
+class WorkerChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, user):
+        return user.get_full_name() or user.username
+
+
+class TaskForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=STATUS_CHOICES, initial="created",
+                               widget=forms.Select(attrs={"class": "input"}))
+    priority = forms.ChoiceField(choices=PRIORITY_CHOICES, initial="medium",
+                                 widget=forms.RadioSelect)
+    workers = WorkerChoiceField(queryset=get_user_model().objects.all(),
+                                widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = Task
+        fields = ["title", "description", "project", "status", "priority",
+                  "start_date", "end_date", "workers"]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "modal-title-input", "placeholder": "Что нужно сделать?"}),
+            "description": forms.Textarea(attrs={"class": "input", "rows": 3, "placeholder": "Описание, ссылки, детали…"}),
+            "project": forms.Select(attrs={"class": "input"}),
+            "start_date": forms.DateInput(attrs={"class": "input", "type": "date"}, format="%Y-%m-%d"),
+            "end_date": forms.DateInput(attrs={"class": "input", "type": "date"}, format="%Y-%m-%d"),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["project"].queryset = Project.objects.order_by("title")
+        self.fields["project"].empty_label = None
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start, end = cleaned_data.get("start_date"), cleaned_data.get("end_date")
+        if start and end and end < start:
+            self.add_error("end_date", "Срок не может быть раньше начала")
+        return cleaned_data

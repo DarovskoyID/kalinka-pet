@@ -5,7 +5,7 @@
   if (ring) {
     const MIN = +ring.dataset.min || 60;
     const MAX = +ring.dataset.max || 87;
-    const INTERVAL = (+ring.dataset.intervalMin || 3) * 60 * 1000; // раз в N минут
+    const INTERVAL = (+ring.dataset.intervalSec || 5) * 1000; // раз в N секунд
     const R = 84, C = 2 * Math.PI * R, COMET = 22;
 
     const valueEl = document.getElementById("ringValue");

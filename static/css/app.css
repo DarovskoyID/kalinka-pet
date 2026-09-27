@@ -251,3 +251,26 @@ select[multiple].input { height: 44px; background-image: none; }
   .ev { font-size: 0; padding: 0; height: 5px; }
   .modal-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- форма задачи ---------- */
+.chip--medium { background: rgba(242,193,78,.14); color: #f5d27f; }
+.side-empty { margin: 4px 12px; font-size: 13px; color: var(--text-3); }
+.form-row { display: grid; gap: 4px; }
+.field-error { font-size: 12px; color: var(--red); }
+.form-error { padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #ffb4b4; background: rgba(242,109,109,.1); border: 1px solid rgba(242,109,109,.35); }
+.muted { color: var(--text-3); font-size: 13px; }
+.task-page { max-width: 640px; display: grid; gap: 14px; padding: 22px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+
+.pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill input, .worker input { position: absolute; opacity: 0; pointer-events: none; }
+.pill span { display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg-2); font-size: 13px; font-weight: 700; color: var(--text-2); cursor: pointer; transition: .15s; }
+.pill span::before { content: ""; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: var(--p); }
+.pill--low { --p: var(--sky); } .pill--medium { --p: var(--amber); } .pill--high { --p: var(--red); }
+.pill input:checked + span { border-color: var(--p); color: var(--text); background: color-mix(in srgb, var(--p) 14%, transparent); }
+.pill input:focus-visible + span, .worker input:focus-visible ~ .worker-name { outline: 2px solid var(--green); outline-offset: 2px; }
+
+.workers { display: flex; gap: 8px; flex-wrap: wrap; max-height: 120px; overflow-y: auto; }
+.worker { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px 0 6px; border-radius: 99px; border: 1px solid var(--line); background: var(--bg-2); cursor: pointer; transition: .15s; font-size: 13px; color: var(--text-2); }
+.worker .avatar { --a: var(--surface-3); color: var(--text-2); border-radius: 50%; }
+.worker:has(input:checked) { border-color: var(--green); color: var(--text); background: var(--green-soft); }
+.worker:has(input:checked) .avatar { --a: var(--green); color: #04130c; }

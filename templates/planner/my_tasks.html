@@ -21,88 +21,85 @@
 
 {% block content %}
 <section class="stats">
-  <div class="stat"><small>Сегодня</small><b>3</b><span>задачи со сроком</span></div>
-  <div class="stat stat--warn"><small>Просрочено</small><b>1</b><span>нужно внимание</span></div>
-  <div class="stat"><small>В работе</small><b>4</b><span>по 3 проектам</span></div>
-  <div class="stat stat--ok"><small>Закрыто за неделю</small><b>18</b><span>+5 к прошлой</span></div>
+  <div class="stat"><small>Сегодня</small><b>{{ count_today_must_be_completed }}</b><span>задачи со сроком</span></div>
+  <div class="stat stat--warn"><small>Просрочено</small><b>{{ count_expired_tasks }}</b><span>нужно внимание</span></div>
+  <div class="stat"><small>В работе</small><b>{{ count_in_work }}</b><span>по 3 проектам</span></div>
+  <div class="stat stat--ok"><small>Закрыто за неделю</small><b>{{ count_completed_tasks_for_the_week }}</b></div>
 </section>
 
 <!-- группа -->
 <section class="group">
-  <header class="group-head"><span class="dot dot--red"></span>Просрочено <em>1</em></header>
+  <header class="group-head"><span class="dot dot--red"></span>Просрочено <em>{{ count_expired_tasks }}</em></header>
   <ul class="rows">
+  {% for task in expired_tasks %}
+  <li class="row">
+    <label class="check-round">
+      <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
+    </label>
+    <div class="row-main">
+      <b>{{ task.title }}</b>
+      <small>
+        <i class="proj" style="--c: rgb({{ task.project.color_Red }}, {{ task.project.color_Green }}, {{ task.project.color_Blue }})"></i>
+        {{ task.project.title }}
+      </small>
+    </div>
+    <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+    <span class="due due--late">{{ task.end_date|date:"j b" }}</span>
+    {% for worker in task.workers.all %}
+      <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+    {% endfor %}
+  </li>
+  {% empty %}
+  <li class="row">Просроченных задач нет</li>
+  {% endfor %}
+</ul>
+</section>
+
+<section class="group">
+  <header class="group-head"><span class="dot dot--green"></span>Сегодня <em>{{ count_today_must_be_completed }}</em></header>
+  <ul class="rows">
+      {% for task in today_must_be_completed %}
     <li class="row">
-      <label class="check-round"><input type="checkbox"><i></i></label>
+      <label class="check-round">
+        <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
+      </label>
       <div class="row-main">
-        <b>Сверстать страницу тарифов</b>
-        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
+        <b>{{ task.title }}</b>
+        <small><i class="proj" style="--c: var(--sky)"></i>{{ task.project.title }}</small>
       </div>
-      <span class="chip chip--high">Высокий</span>
-      <span class="due due--late">25 сен</span>
-      <span class="avatar avatar--sm">ИД</span>
+      <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+      <span class="due">{{ task.end_date|date:"j b" }}</span>
+        {% for worker in task.workers.all %}
+          <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+        {% endfor %}
     </li>
+      {% empty %}
+        <li class="row">задач нет</li>
+      {% endfor %}
   </ul>
 </section>
 
 <section class="group">
-  <header class="group-head"><span class="dot dot--green"></span>Сегодня <em>3</em></header>
+  <header class="group-head"><span class="dot dot--sky"></span>В работе <em>{{ count_in_work }}</em></header>
   <ul class="rows">
+     {% for task in in_work %}
     <li class="row">
-      <label class="check-round"><input type="checkbox"><i></i></label>
+      <label class="check-round">
+        <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
+      </label>
       <div class="row-main">
-        <b>Команда /today для бота</b>
-        <small><i class="proj" style="--c: var(--sky)"></i>Telegram-бот · 2/5 подзадач</small>
+        <b>{{ task.title }}</b>
+        <small><i class="proj" style="--c: var(--amber)"></i>{{ task.project.title }}</small>
       </div>
-      <span class="chip chip--mid">Средний</span>
-      <span class="due">Сегодня</span>
-      <span class="avatar avatar--sm">ИД</span>
+      <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+      <span class="due">{{ task.end_date|date:"j b" }}</span>
+        {% for worker in task.workers.all %}
+          <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+        {% endfor %}
     </li>
-    <li class="row">
-      <label class="check-round"><input type="checkbox"><i></i></label>
-      <div class="row-main">
-        <b>Ревью модели Task</b>
-        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
-      </div>
-      <span class="chip chip--low">Низкий</span>
-      <span class="due">Сегодня</span>
-      <span class="avatar avatar--sm" style="--a: var(--violet)">АК</span>
-    </li>
-    <li class="row is-done">
-      <label class="check-round"><input type="checkbox" checked><i></i></label>
-      <div class="row-main">
-        <b>Настроить docker compose</b>
-        <small><i class="proj" style="--c: var(--amber)"></i>C++ движок</small>
-      </div>
-      <span class="chip chip--mid">Средний</span>
-      <span class="due">Сегодня</span>
-      <span class="avatar avatar--sm">ИД</span>
-    </li>
-  </ul>
-</section>
-
-<section class="group">
-  <header class="group-head"><span class="dot dot--sky"></span>На этой неделе <em>2</em></header>
-  <ul class="rows">
-    <li class="row">
-      <label class="check-round"><input type="checkbox"><i></i></label>
-      <div class="row-main">
-        <b>Алгоритм распределения задач по свободным исполнителям</b>
-        <small><i class="proj" style="--c: var(--amber)"></i>C++ движок</small>
-      </div>
-      <span class="chip chip--high">Высокий</span>
-      <span class="due">30 сен</span>
-      <span class="avatar avatar--sm">ИД</span>
-    </li>
-    <li class="row">
-      <label class="check-round"><input type="checkbox"><i></i></label>
-      <div class="row-main">
-        <b>REST: эндпоинт списка задач</b>
-        <small><i class="proj" style="--c: var(--green)"></i>Сайт «Калинка»</small>
-      </div>
-      <span class="chip chip--mid">Средний</span>
-      <span class="due">2 окт</span>
-      <span class="avatar avatar--sm" style="--a: var(--sky)">ОМ</span>
-    </li>
+      {% empty %}
+        <li class="row">задач нет</li>
+      {% endfor %}
   </ul>
 </section>
 

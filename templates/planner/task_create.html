@@ -1,0 +1,20 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Новая задача — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Новая задача</h1>
+  <p>Заполните поля и сохраните</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<form class="task-page" method="post" action="{% url 'task_create' %}" novalidate>
+  {% include "partials/task_form.html" with form=task_form next=request.POST.next %}
+  <div class="modal-foot">
+    <a href="{{ request.POST.next|default:'/app/' }}" class="btn btn-ghost">Отмена</a>
+    <button type="submit" class="btn btn-primary">Создать задачу</button>
+  </div>
+</form>
+{% endblock %}
