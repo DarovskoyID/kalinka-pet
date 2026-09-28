@@ -23,7 +23,7 @@
 <section class="stats">
   <div class="stat"><small>Сегодня</small><b>{{ count_today_must_be_completed }}</b><span>задачи со сроком</span></div>
   <div class="stat stat--warn"><small>Просрочено</small><b>{{ count_expired_tasks }}</b><span>нужно внимание</span></div>
-  <div class="stat"><small>В работе</small><b>{{ count_in_work }}</b><span>по 3 проектам</span></div>
+  <div class="stat"><small>В работе</small><b>{{ count_in_work }}</b><span>по {{ count_projects }} проектам</span></div>
   <div class="stat stat--ok"><small>Закрыто за неделю</small><b>{{ count_completed_tasks_for_the_week }}</b></div>
 </section>
 

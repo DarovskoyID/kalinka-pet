@@ -11,8 +11,10 @@ from tasksManager.models import statuses
 
 @login_required
 def my_tasks(request):
-    model = Task;
+    model = Task
     today = timezone.localtime()
+
+    count_projects = model.objects.filter(workers=request.user).values("project").distinct().count()
 
     week_start = (today - timedelta(days=today.weekday())).replace(
         hour=0, minute=0, second=0, microsecond=0
@@ -33,7 +35,7 @@ def my_tasks(request):
         .order_by("end_date")
     )
 
-    expired_tasks = model.objects.filter(end_date__lt=today)
+    expired_tasks = model.objects.filter(end_date__lt=today).exclude(status="complete")
     count_expired_tasks = expired_tasks.count()
     expired_tasks = (
         expired_tasks
@@ -53,7 +55,8 @@ def my_tasks(request):
         "count_completed_tasks_for_the_week" : count_completed_tasks_for_the_week,
         "expired_tasks" : expired_tasks,
         "in_work" : in_work,
-        "today_must_be_completed" : today_must_be_completed
+        "today_must_be_completed" : today_must_be_completed,
+        "count_projects" : count_projects,
     }
     return render(request, "planner/my_tasks.html", context)
 
@@ -63,7 +66,27 @@ def calendar(request):
 
 @login_required
 def project_board(request, project_id):
-    return render(request, "planner/project_board.html", {"project_id": project_id})
+    model = Task
+    today = timezone.localtime()
+
+    in_work = model.objects.filter(status="active")
+    count_in_work = in_work.count()
+
+    completed_tasks = model.objects.filter(status="complete", project_id=project_id)
+    count_completed_tasks = completed_tasks.count()
+
+    queued_tasks = model.objects.filter(status__in=["inactive", "created"], project_id=project_id)
+    count_queued_tasks = queued_tasks.count()
+
+    context = {
+        "count_in_work": count_in_work,
+        "in_work": in_work,
+        "count_completed_tasks": count_completed_tasks,
+        "completed_tasks": completed_tasks,
+        "count_queued_tasks": count_queued_tasks,
+        "queued_tasks": queued_tasks,
+    }
+    return render(request, "planner/project_board.html", context)
 
 @login_required
 def project_list(request, project_id):
