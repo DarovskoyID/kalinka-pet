@@ -1,7 +1,8 @@
 {% extends "planner/project_base.html" %}
 
 {% block content %}
-<div class="board" id="board">
+<div class="board" id="board" data-status-url="{% url 'task_set_status' 0 %}">
+  {% csrf_token %}
 
   <section class="col" data-col>
     <header class="col-head">
@@ -10,9 +11,9 @@
       <em class="col-count">{{ count_queued_tasks }}</em>
       <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
     </header>
-    <div class="col-body" data-dropzone>
+    <div class="col-body" data-dropzone data-status="created">
         {% for task in queued_tasks %}
-      <article class="card" draggable="true" data-priority="high">
+      <article class="card" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
         <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
@@ -22,7 +23,7 @@
         </footer>
       </article>
         {% empty %}
-            <h4>Нет задач</h4>
+            <h4 class="col-empty">Нет задач</h4>
       {% endfor %}
     </div>
     <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>
@@ -35,9 +36,9 @@
       <em class="col-count">{{ count_in_work }}</em>
       <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
     </header>
-    <div class="col-body" data-dropzone>
+    <div class="col-body" data-dropzone data-status="active">
         {% for task in in_work %}
-      <article class="card" draggable="true" data-priority="high">
+      <article class="card" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
         <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
@@ -47,7 +48,7 @@
         </footer>
       </article>
         {% empty %}
-            <h4>Нет задач</h4>
+            <h4 class="col-empty">Нет задач</h4>
         {% endfor %}
     </div>
     <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>
@@ -60,9 +61,9 @@
       <em class="col-count">{{ count_completed_tasks }}</em>
       <button class="icon-btn" aria-label="Меню колонки"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
     </header>
-    <div class="col-body" data-dropzone>
+    <div class="col-body" data-dropzone data-status="complete">
         {%  for task in completed_tasks %}
-      <article class="card is-done" draggable="true" data-priority="mid">
+      <article class="card is-done" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
             {% for worker in task.workers.all %}
@@ -71,7 +72,7 @@
         </footer>
       </article>
         {% empty %}
-            <h4>Нет задач</h4>
+            <h4 class="col-empty">Нет задач</h4>
         {% endfor %}
     </div>
     <button class="col-add" data-open="taskModal"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Добавить задачу</button>

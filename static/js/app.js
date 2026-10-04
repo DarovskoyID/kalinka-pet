@@ -54,19 +54,49 @@
   /* ---------- drag & drop доски ---------- */
   const board = document.getElementById("board");
   if (board) {
-    let dragged = null;
+    let dragged = null, fromZone = null, fromNext = null;
+    const csrf = board.querySelector("[name=csrfmiddlewaretoken]")?.value;
     const recount = () => board.querySelectorAll("[data-col]").forEach((col) => {
       col.querySelector(".col-count").textContent = col.querySelectorAll(".card").length;
     });
+
+    // сохраняем новый статус; при ошибке возвращаем карточку на место
+    async function saveStatus(card, zone, backZone, backNext) {
+      const status = zone.dataset.status;
+      card.classList.add("is-saving");
+      try {
+        const resp = await fetch(board.dataset.statusUrl.replace("/0/", `/${card.dataset.taskId}/`), {
+          method: "POST",
+          headers: { "X-CSRFToken": csrf, "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ status }),
+        });
+        if (!resp.ok) throw new Error(resp.status);
+        card.dataset.status = status;
+        card.classList.toggle("is-done", status === "complete");
+      } catch (err) {
+        backZone.insertBefore(card, backNext);
+        recount();
+        alert("Не удалось сменить статус задачи. Попробуйте ещё раз.");
+      } finally {
+        card.classList.remove("is-saving");
+      }
+    }
+
     board.addEventListener("dragstart", (e) => {
       dragged = e.target.closest(".card"); if (!dragged) return;
+      fromZone = dragged.parentElement;
+      fromNext = dragged.nextElementSibling;
       dragged.classList.add("is-dragging");
       e.dataTransfer.effectAllowed = "move";
     });
     board.addEventListener("dragend", () => {
-      dragged?.classList.remove("is-dragging"); dragged = null;
+      if (!dragged) return;
+      const card = dragged, zone = card.parentElement;
+      card.classList.remove("is-dragging");
       board.querySelectorAll(".is-over").forEach((z) => z.classList.remove("is-over"));
       recount();
+      if (zone !== fromZone && zone.dataset.status) saveStatus(card, zone, fromZone, fromNext);
+      dragged = fromZone = fromNext = null;
     });
     board.addEventListener("dragover", (e) => {
       const zone = e.target.closest("[data-dropzone]"); if (!zone || !dragged) return;

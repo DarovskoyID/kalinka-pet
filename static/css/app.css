@@ -298,3 +298,7 @@ select[multiple].input { height: 44px; background-image: none; }
 .danger-zone div { display: grid; }
 .danger-zone b { font-size: 14px; }
 .danger-zone small { font-size: 12px; color: var(--text-3); }
+
+/* ---------- смена статуса перетаскиванием ---------- */
+.col-body:has(.card) .col-empty { display: none; }
+.card.is-saving { opacity: .6; pointer-events: none; }

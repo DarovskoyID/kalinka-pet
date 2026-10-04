@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}Калинка — твой менеджер задач{% endblock %}
-{% block styles %}<link rel="stylesheet" href="{% static 'css/landing.css' %}">{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/landing.css' %}?v={{ static_version }}">{% endblock %}
 {% block body_class %}landing{% endblock %}
 
 {% block body %}
@@ -300,6 +300,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/matrix.js' %}"></script>
-<script src="{% static 'js/landing.js' %}"></script>
+<script src="{% static 'js/matrix.js' %}?v={{ static_version }}"></script>
+<script src="{% static 'js/landing.js' %}?v={{ static_version }}"></script>
 {% endblock %}

@@ -1,11 +1,12 @@
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
-from tasksManager.forms import ProjectForm, TaskForm
+from tasksManager.forms import STATUS_CHOICES, ProjectForm, TaskForm
 from tasksManager.models import Project, Task
 from tasksManager.models import statuses
 
@@ -173,3 +174,18 @@ def project_delete(request, project_id):
     # задачи проекта удалятся каскадом (on_delete=CASCADE)
     get_object_or_404(Project, pk=project_id).delete()
     return redirect("my_tasks")
+
+@login_required
+@require_POST
+def task_set_status(request, task_id):
+    """Смена статуса перетаскиванием карточки на доске (fetch из static/js/app.js)."""
+    task = get_object_or_404(Task, pk=task_id)
+    status = request.POST.get("status")
+    if status not in dict(STATUS_CHOICES):
+        return JsonResponse({"error": "Неизвестный статус"}, status=400)
+
+    task.status = status
+    # дата закрытия нужна для счётчика «Закрыто за неделю»
+    task.completed = (task.completed or timezone.localdate()) if status == "complete" else None
+    task.save(update_fields=["status", "completed"])
+    return JsonResponse({"id": task.id, "status": task.status})
