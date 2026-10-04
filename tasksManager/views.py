@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
-from tasksManager.forms import TaskForm
+from tasksManager.forms import ProjectForm, TaskForm
 from tasksManager.models import Task
 from tasksManager.models import statuses
 
@@ -69,7 +69,7 @@ def project_board(request, project_id):
     model = Task
     today = timezone.localtime()
 
-    in_work = model.objects.filter(status="active")
+    in_work = model.objects.filter(status="active", project_id=project_id)
     count_in_work = in_work.count()
 
     completed_tasks = model.objects.filter(status="complete", project_id=project_id)
@@ -110,3 +110,15 @@ def task_create(request):
         form = TaskForm(initial={"workers": [request.user.pk], "start_date": timezone.localdate()})
 
     return render(request, "planner/task_create.html", {"task_form": form})
+
+@login_required
+def project_create(request):
+    if request.method == "POST":
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = form.save()
+            return redirect("project_board", project_id=project.id)
+    else:
+        form = ProjectForm()
+
+    return render(request, "planner/project_create.html", {"project_form": form})

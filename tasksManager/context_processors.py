@@ -2,12 +2,14 @@ from datetime import timedelta
 
 from django.db.models import Count
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
-from tasksManager.forms import TaskForm
+from tasksManager.forms import PROJECT_COLORS, ProjectForm, TaskForm
 from tasksManager.models import Project
 
 
-PLANNER_PAGES = {"my_tasks", "calendar", "project_board", "project_list", "project_calendar", "task_create"}
+PLANNER_PAGES = {"my_tasks", "calendar", "project_board", "project_list", "project_calendar", "task_create",
+                 "project_create"}
 
 
 def planner(request):
@@ -17,6 +19,7 @@ def planner(request):
 
     user = request.user
     project_id = match.kwargs.get("project_id")
+    current_project = get_object_or_404(Project, pk=project_id) if project_id else None
     today = timezone.localdate()
     week_start = today - timedelta(days=today.weekday())
     week_end = week_start + timedelta(days=6)
@@ -31,10 +34,13 @@ def planner(request):
 
     return {
         "project_id": project_id,
+        "current_project": current_project,
         "sidebar_projects": Project.objects.annotate(task_count=Count("task")).order_by("title"),
         "my_open_tasks_count": user.tasks.exclude(status="complete").count(),
         "week_total": week_total,
         "week_done": week_done,
         "week_percent": round(week_done * 100 / week_total) if week_total else 0,
         "task_form": TaskForm(initial=initial),
+        "project_form": ProjectForm(),
+        "project_colors": PROJECT_COLORS,
     }

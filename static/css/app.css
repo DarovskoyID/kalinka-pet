@@ -274,3 +274,14 @@ select[multiple].input { height: 44px; background-image: none; }
 .worker .avatar { --a: var(--surface-3); color: var(--text-2); border-radius: 50%; }
 .worker:has(input:checked) { border-color: var(--green); color: var(--text); background: var(--green-soft); }
 .worker:has(input:checked) .avatar { --a: var(--green); color: #04130c; }
+
+/* ---------- форма проекта ---------- */
+.project-page { max-width: 460px; }
+.swatches { flex-wrap: wrap; }
+.swatch-custom { position: relative; }
+.swatch-custom i { background: conic-gradient(#f26d6d, #f2c14e, #3ecf8e, #5cc8f2, #a78bfa, #f26d6d); display: grid; place-items: center; }
+.swatch-custom i::after { content: ""; width: 12px; height: 12px; border-radius: 4px; background: var(--c); box-shadow: 0 0 0 2px var(--surface); }
+.swatch-custom input[type="color"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.project-preview { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 12px; border-radius: 10px; background: var(--surface-3); font-size: 14px; color: var(--text); }
+.project-preview i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); box-shadow: 0 0 10px -2px var(--c); flex: none; }
+.project-preview span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

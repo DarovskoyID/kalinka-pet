@@ -1,0 +1,20 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Новый проект — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Новый проект</h1>
+  <p>Название и цвет — остальное настроите потом</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<form class="task-page project-page" method="post" action="{% url 'project_create' %}" novalidate data-project-form>
+  {% include "partials/project_form.html" with form=project_form %}
+  <div class="modal-foot">
+    <a href="{% url 'my_tasks' %}" class="btn btn-ghost">Отмена</a>
+    <button type="submit" class="btn btn-primary">Создать проект</button>
+  </div>
+</form>
+{% endblock %}

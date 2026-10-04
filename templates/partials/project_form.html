@@ -1,0 +1,39 @@
+{# Поля формы нового проекта. Ожидает в контексте: form (ProjectForm), project_colors (готовая палитра) #}
+{% csrf_token %}
+
+{% if form.non_field_errors %}
+  <div class="form-error">{% for e in form.non_field_errors %}{{ e }}<br>{% endfor %}</div>
+{% endif %}
+
+<label class="field">
+  <span>Название</span>
+  {{ form.title }}
+  {% for e in form.title.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</label>
+
+{% with current=form.color.value|lower %}
+<div class="field">
+  <span>Цвет</span>
+  <div class="swatches">
+    {% for c in project_colors %}
+      <label title="{{ c }}">
+        <input type="radio" name="{{ form.color.html_name }}" value="{{ c }}" {% if current == c %}checked{% endif %}>
+        <i style="--c: {{ c }}"></i>
+      </label>
+    {% endfor %}
+    {# свой цвет: значение радиокнопки подставляет static/js/app.js из color picker #}
+    <label class="swatch-custom" title="Свой цвет">
+      <input type="radio" name="{{ form.color.html_name }}" value="{{ current }}" data-color-custom
+             {% if current not in project_colors %}checked{% endif %}>
+      <i style="--c: {{ current }}"></i>
+      <input type="color" value="{{ current }}" data-color-picker aria-label="Свой цвет">
+    </label>
+  </div>
+  {% for e in form.color.errors %}<small class="field-error">{{ e }}</small>{% endfor %}
+</div>
+{% endwith %}
+
+<div class="project-preview">
+  <i data-color-preview style="--c: {{ form.color.value }}"></i>
+  <span data-title-preview>{{ form.title.value|default:"Новый проект" }}</span>
+</div>

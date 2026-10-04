@@ -105,30 +105,22 @@
 {% endif %}
 
 <!-- ============ модалка: новый проект ============ -->
+{% if request.resolver_match.url_name != "project_create" %}
 <div class="modal" id="projectModal" hidden>
   <div class="modal-backdrop" data-close></div>
-  <form class="modal-card modal-card--sm" method="post" action="#">
-    {% csrf_token %}
+  <form class="modal-card modal-card--sm" method="post" action="{% url 'project_create' %}" data-project-form>
     <div class="modal-head">
       <h3>Новый проект</h3>
       <button type="button" class="icon-btn" data-close aria-label="Закрыть"><svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
-    <label class="field"><span>Название</span><input class="input" name="name" placeholder="Например, «Ремонт»" required></label>
-    <div class="field"><span>Цвет</span>
-      <div class="swatches">
-        <label><input type="radio" name="color" value="green" checked><i style="--c: var(--green)"></i></label>
-        <label><input type="radio" name="color" value="sky"><i style="--c: var(--sky)"></i></label>
-        <label><input type="radio" name="color" value="amber"><i style="--c: var(--amber)"></i></label>
-        <label><input type="radio" name="color" value="violet"><i style="--c: var(--violet)"></i></label>
-        <label><input type="radio" name="color" value="red"><i style="--c: var(--red)"></i></label>
-      </div>
-    </div>
+    {% include "partials/project_form.html" with form=project_form %}
     <div class="modal-foot">
       <button type="button" class="btn btn-ghost" data-close>Отмена</button>
       <button type="submit" class="btn btn-primary">Создать</button>
     </div>
   </form>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}<script src="{% static 'js/app.js' %}"></script>{% endblock %}

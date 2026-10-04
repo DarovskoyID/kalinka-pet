@@ -55,3 +55,33 @@ class TaskForm(forms.ModelForm):
         if start and end and end < start:
             self.add_error("end_date", "Срок не может быть раньше начала")
         return cleaned_data
+
+
+PROJECT_COLORS = ["#3ecf8e", "#5cc8f2", "#f2c14e", "#a78bfa", "#f26d6d", "#f28fc4"]
+
+
+class ProjectForm(forms.ModelForm):
+    # В модели цвет хранится тремя полями RGB, в форме — одной hex-строкой
+    color = forms.RegexField(regex=r"^#[0-9a-fA-F]{6}$", initial=PROJECT_COLORS[0],
+                             error_messages={"invalid": "Цвет должен быть в формате #RRGGBB"})
+
+    class Meta:
+        model = Project
+        fields = ["title"]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "input", "placeholder": "Например, «Ремонт»", "autocomplete": "off"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            p = self.instance
+            self.initial["color"] = f"#{p.color_Red:02x}{p.color_Green:02x}{p.color_Blue:02x}"
+
+    def save(self, commit=True):
+        project = super().save(commit=False)
+        h = self.cleaned_data["color"].lstrip("#")
+        project.color_Red, project.color_Green, project.color_Blue = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+        if commit:
+            project.save()
+        return project

@@ -1,11 +1,11 @@
 {% extends "planner/base_app.html" %}
 
-{% block title %}Сайт «Калинка» — Калинка{% endblock %}
+{% block title %}{{ current_project.title }} — Калинка{% endblock %}
 
 {% block topline %}
 <div class="project-title">
-  <i class="proj proj--lg" style="--c: var(--green)"></i>
-  <h1>Сайт «Калинка»</h1>
+  <i class="proj proj--lg" style="--c: rgb({{ current_project.color_Red }}, {{ current_project.color_Green }}, {{ current_project.color_Blue }})"></i>
+  <h1>{{ current_project.title }}</h1>
   <button class="icon-btn" aria-label="Настройки проекта"><svg class="icon" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
 </div>
 

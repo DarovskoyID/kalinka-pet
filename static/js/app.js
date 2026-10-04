@@ -129,4 +129,26 @@
     });
     render();
   }
+
+  /* ---------- форма проекта: свой цвет и живое превью ---------- */
+  document.querySelectorAll("[data-project-form]").forEach((form) => {
+    const preview = form.querySelector("[data-color-preview]");
+    const titlePreview = form.querySelector("[data-title-preview]");
+    const custom = form.querySelector("[data-color-custom]");
+    const picker = form.querySelector("[data-color-picker]");
+    const paint = (c) => preview?.style.setProperty("--c", c);
+
+    form.addEventListener("change", (e) => {
+      if (e.target.name === "color") paint(e.target.value);
+    });
+    picker?.addEventListener("input", () => {
+      custom.value = picker.value;
+      custom.checked = true;
+      custom.nextElementSibling.style.setProperty("--c", picker.value);
+      paint(picker.value);
+    });
+    form.querySelector('[name="title"]')?.addEventListener("input", (e) => {
+      titlePreview.textContent = e.target.value.trim() || "Новый проект";
+    });
+  });
 })();
