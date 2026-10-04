@@ -9,7 +9,7 @@ from tasksManager.models import Project
 
 
 PLANNER_PAGES = {"my_tasks", "calendar", "project_board", "project_list", "project_calendar", "task_create",
-                 "project_create"}
+                 "project_create", "task_edit", "project_edit"}
 
 
 def planner(request):

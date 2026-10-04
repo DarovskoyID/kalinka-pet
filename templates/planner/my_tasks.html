@@ -37,7 +37,7 @@
       <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
     </label>
     <div class="row-main">
-      <b>{{ task.title }}</b>
+      <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
       <small>
         <i class="proj" style="--c: rgb({{ task.project.color_Red }}, {{ task.project.color_Green }}, {{ task.project.color_Blue }})"></i>
         {{ task.project.title }}
@@ -64,7 +64,7 @@
         <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
       </label>
       <div class="row-main">
-        <b>{{ task.title }}</b>
+        <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--sky)"></i>{{ task.project.title }}</small>
       </div>
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
@@ -88,7 +88,7 @@
         <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
       </label>
       <div class="row-main">
-        <b>{{ task.title }}</b>
+        <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--amber)"></i>{{ task.project.title }}</small>
       </div>
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>

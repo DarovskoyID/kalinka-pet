@@ -1,0 +1,32 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}Настройки проекта — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Настройки проекта</h1>
+  <p>{{ current_project.title }}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<form class="task-page project-page" method="post" action="{% url 'project_edit' current_project.id %}" novalidate data-project-form>
+  {% include "partials/project_form.html" with form=edit_form %}
+  <div class="modal-foot">
+    <a href="{% url 'project_board' current_project.id %}" class="btn btn-ghost">Отмена</a>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </div>
+</form>
+
+{% with tasks_count=current_project.task_set.count %}
+<form class="danger-zone" method="post" action="{% url 'project_delete' current_project.id %}"
+      data-confirm="Удалить проект «{{ current_project.title }}»{% if tasks_count %} вместе с задачами ({{ tasks_count }}){% endif %}? Это действие нельзя отменить.">
+  {% csrf_token %}
+  <div>
+    <b>Удалить проект</b>
+    <small>{% if tasks_count %}Вместе с проектом удалятся все его задачи: {{ tasks_count }}.{% else %}В проекте нет задач.{% endif %}</small>
+  </div>
+  <button type="submit" class="btn btn-danger">Удалить</button>
+</form>
+{% endwith %}
+{% endblock %}

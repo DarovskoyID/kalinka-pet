@@ -1,10 +1,12 @@
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
 from tasksManager.forms import ProjectForm, TaskForm
-from tasksManager.models import Task
+from tasksManager.models import Project, Task
 from tasksManager.models import statuses
 
 
@@ -122,3 +124,52 @@ def project_create(request):
         form = ProjectForm()
 
     return render(request, "planner/project_create.html", {"project_form": form})
+
+def _safe_next(request, fallback):
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        return next_url
+    return fallback
+
+@login_required
+def task_edit(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    next_url = _safe_next(request, reverse("project_board", args=[task.project_id]))
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect(next_url)
+    else:
+        form = TaskForm(instance=task)
+
+    # не "task_form": так называется форма создания в модалке base_app
+    return render(request, "planner/task_edit.html", {"edit_form": form, "task": task, "next": next_url})
+
+@login_required
+def project_edit(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if request.method == "POST":
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect("project_board", project_id=project.id)
+    else:
+        form = ProjectForm(instance=project)
+
+    return render(request, "planner/project_edit.html", {"edit_form": form})
+
+@login_required
+@require_POST
+def task_delete(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+    next_url = _safe_next(request, reverse("project_board", args=[task.project_id]))
+    task.delete()
+    return redirect(next_url)
+
+@login_required
+@require_POST
+def project_delete(request, project_id):
+    # задачи проекта удалятся каскадом (on_delete=CASCADE)
+    get_object_or_404(Project, pk=project_id).delete()
+    return redirect("my_tasks")

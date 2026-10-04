@@ -14,7 +14,7 @@
         {% for task in queued_tasks %}
       <article class="card" draggable="true" data-priority="high">
         <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
-        <h4>{{ task.title }}</h4>
+        <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
             {% for worker in task.workers.all %}
                 <span class="avatar avatar--xs">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
@@ -39,7 +39,7 @@
         {% for task in in_work %}
       <article class="card" draggable="true" data-priority="high">
         <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
-        <h4>{{ task.title }}</h4>
+        <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
             {% for worker in task.workers.all %}
                 <span class="avatar avatar--xs">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
@@ -63,7 +63,7 @@
     <div class="col-body" data-dropzone>
         {%  for task in completed_tasks %}
       <article class="card is-done" draggable="true" data-priority="mid">
-        <h4>{{ task.title }}</h4>
+        <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
             {% for worker in task.workers.all %}
                 <span class="avatar avatar--xs">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>

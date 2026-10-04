@@ -1,0 +1,31 @@
+{% extends "planner/base_app.html" %}
+
+{% block title %}{{ task.title }} — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Редактирование задачи</h1>
+  <p><i class="proj" style="--c: rgb({{ task.project.color_Red }}, {{ task.project.color_Green }}, {{ task.project.color_Blue }})"></i>{{ task.project.title }}</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<form class="task-page" method="post" action="{% url 'task_edit' task.id %}" novalidate>
+  {% include "partials/task_form.html" with form=edit_form next=next %}
+  <div class="modal-foot">
+    <a href="{{ next }}" class="btn btn-ghost">Отмена</a>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+  </div>
+</form>
+
+<form class="danger-zone" method="post" action="{% url 'task_delete' task.id %}"
+      data-confirm="Удалить задачу «{{ task.title }}»? Это действие нельзя отменить.">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  <div>
+    <b>Удалить задачу</b>
+    <small>Задача пропадёт у всех исполнителей.</small>
+  </div>
+  <button type="submit" class="btn btn-danger">Удалить</button>
+</form>
+{% endblock %}

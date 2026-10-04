@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from tasksManager.models import Project, Task
 
@@ -55,6 +56,18 @@ class TaskForm(forms.ModelForm):
         if start and end and end < start:
             self.add_error("end_date", "Срок не может быть раньше начала")
         return cleaned_data
+
+    def save(self, commit=True):
+        task = super().save(commit=False)
+        # дата закрытия нужна для счётчика «Закрыто за неделю»
+        if task.status == "complete":
+            task.completed = task.completed or timezone.localdate()
+        else:
+            task.completed = None
+        if commit:
+            task.save()
+            self.save_m2m()
+        return task
 
 
 PROJECT_COLORS = ["#3ecf8e", "#5cc8f2", "#f2c14e", "#a78bfa", "#f26d6d", "#f28fc4"]
