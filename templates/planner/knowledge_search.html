@@ -1,0 +1,64 @@
+{% extends "planner/base_app.html" %}
+{% load avatars %}
+
+{% block title %}Умный поиск — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Мои задачи</h1>
+  <p>Умный поиск по задачам и проектам</p>
+</div>
+<div class="topline-actions">
+  {% include "partials/my_tasks_tabs.html" %}
+  <button class="btn btn-primary" data-open="taskModal">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<form class="search search--wide" action="{% url 'knowledge_search' %}" method="get" role="search">
+  <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input type="search" name="q" value="{{ q }}" placeholder="Например: просрочено high лендинг" autofocus>
+  <button class="btn btn-primary btn-sm" type="submit">Найти</button>
+</form>
+<p class="muted search-hint">Подсказки: <b>просрочено</b>, <b>сегодня</b>, <b>в работе</b>, <b>готово</b>, <b>high</b> / <b>medium</b> / <b>low</b>, а также название задачи, проекта или имя исполнителя.</p>
+
+{% if q %}
+  {% if projects %}
+  <section class="group">
+    <header class="group-head"><span class="dot dot--sky"></span>Проекты <em>{{ projects|length }}</em></header>
+    <ul class="rows">
+      {% for project in projects %}
+      <li class="row">
+        <i class="proj" style="--c: rgb({{ project.color_Red }}, {{ project.color_Green }}, {{ project.color_Blue }})"></i>
+        <div class="row-main"><b><a class="task-link" href="{% url 'project_board' project.id %}">{{ project.title }}</a></b></div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="group">
+    <header class="group-head"><span class="dot dot--green"></span>Задачи <em>{{ tasks|length }}</em></header>
+    <ul class="rows">
+      {% for task in tasks %}
+      <li class="row">
+        <div class="row-main">
+          <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
+          <small>
+            <i class="proj" style="--c: rgb({{ task.project.color_Red }}, {{ task.project.color_Green }}, {{ task.project.color_Blue }})"></i>
+            {{ task.project.title }} · {{ task.get_status_display }}
+          </small>
+        </div>
+        <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+        <span class="due{% if task.end_date < today and task.status != 'complete' %} due--late{% endif %}">{{ task.end_date|date:"j b" }}</span>
+        {% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}
+      </li>
+      {% empty %}
+      <li class="row">Ничего не найдено</li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endif %}
+{% endblock %}

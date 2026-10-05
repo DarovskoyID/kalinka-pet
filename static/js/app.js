@@ -110,55 +110,12 @@
     board.addEventListener("drop", (e) => e.preventDefault());
   }
 
-  /* ---------- календарь ---------- */
-  const cal = document.getElementById("calendar");
-  if (cal) {
-    const MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-    const events = JSON.parse(cal.dataset.events || "[]");
-    const grid = document.getElementById("calGrid"), title = document.getElementById("calTitle");
-    const today = new Date();
-    let view = new Date(today.getFullYear(), today.getMonth(), 1);
-    const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-    function render() {
-      title.textContent = `${MONTHS[view.getMonth()]} ${view.getFullYear()}`;
-      const shift = (view.getDay() + 6) % 7; // понедельник — первый день
-      const start = new Date(view); start.setDate(1 - shift);
-      grid.innerHTML = "";
-      for (let i = 0; i < 42; i++) {
-        const d = new Date(start); d.setDate(start.getDate() + i);
-        const cell = document.createElement("div");
-        cell.className = "day";
-        if (d.getMonth() !== view.getMonth()) cell.classList.add("is-other");
-        if (iso(d) === iso(today)) cell.classList.add("is-today");
-        cell.innerHTML = `<span class="day-num">${d.getDate()}</span>
-          <button class="icon-btn day-add" data-open="taskModal" data-date="${iso(d)}" aria-label="Добавить задачу">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`;
-        events.filter((ev) => ev.d === iso(d)).forEach((ev) => {
-          const el = document.createElement("div");
-          el.className = "ev"; el.style.setProperty("--c", `var(--${ev.c})`); el.textContent = el.title = ev.t;
-          cell.appendChild(el);
-        });
-        grid.appendChild(cell);
-      }
-    }
-    cal.addEventListener("click", (e) => {
-      const b = e.target.closest("[data-cal]");
-      if (b) {
-        const a = b.dataset.cal;
-        view = a === "today" ? new Date(today.getFullYear(), today.getMonth(), 1)
-          : new Date(view.getFullYear(), view.getMonth() + (a === "next" ? 1 : -1), 1);
-        render();
-      }
-      // клик по «+» в дне подставляет дату в форму
-      const add = e.target.closest(".day-add");
-      if (add) {
-        const f = document.querySelector('#taskModal [name="end_date"]');
-        if (f) f.value = add.dataset.date;
-      }
-    });
-    render();
-  }
+  /* ---------- календарь: клик по «+» в дне подставляет дату в форму (сетку строит сервер) ---------- */
+  document.querySelector("#calendar")?.addEventListener("click", (e) => {
+    const add = e.target.closest(".day-add");
+    const f = add && document.querySelector('#taskModal [name="end_date"]');
+    if (f) f.value = add.dataset.date;
+  });
 
   /* ---------- форма проекта: свой цвет и живое превью ---------- */
   document.querySelectorAll("[data-project-form]").forEach((form) => {

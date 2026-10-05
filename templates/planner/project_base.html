@@ -1,4 +1,5 @@
 {% extends "planner/base_app.html" %}
+{% load avatars %}
 
 {% block title %}{{ current_project.title }} — Калинка{% endblock %}
 
@@ -34,10 +35,9 @@
     <option value="mid">Средний</option>
     <option value="low">Низкий</option>
   </select>
-  <div class="avatars">
-    <span class="avatar avatar--sm">ИД</span>
-    <span class="avatar avatar--sm" style="--a: var(--violet)">АК</span>
-    <span class="avatar avatar--sm" style="--a: var(--sky)">ОМ</span>
+  <div class="avatars" title="Участники проекта">
+    {% for member in project_members|slice:":5" %}{% avatar member "sm" %}{% endfor %}
+    {% if project_members|length > 5 %}<span class="avatar avatar--sm" style="--a: var(--surface-3); color: var(--text-2)">+{{ project_members|length|add:"-5" }}</span>{% endif %}
   </div>
   <button class="btn btn-primary" data-open="taskModal">
     <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Задача

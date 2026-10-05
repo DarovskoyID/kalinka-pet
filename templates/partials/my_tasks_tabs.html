@@ -1,0 +1,4 @@
+<nav class="segmented" aria-label="Режим">
+  <a href="{% url 'my_tasks' %}" class="{% if request.resolver_match.url_name == 'my_tasks' %}is-active{% endif %}">Все</a>
+  <a href="{% url 'knowledge_search' %}" class="{% if request.resolver_match.url_name == 'knowledge_search' %}is-active{% endif %}">Умный поиск</a>
+</nav>

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from tasksManager.forms import STATUS_CHOICES, ProjectForm, TaskForm
 from tasksManager.models import Project, Task
 from tasksManager.models import statuses
+from tasksManager.search import search_projects, search_tasks
 
 
 
@@ -63,9 +64,42 @@ def my_tasks(request):
     }
     return render(request, "planner/my_tasks.html", context)
 
+MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+          "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+
+
+def _calendar_context(request, tasks):
+    """Сетка месяца (6 недель, с понедельника) с задачами по сроку; месяц берётся из ?month=YYYY-MM."""
+    today = timezone.localdate()
+    try:
+        year, month = map(int, request.GET.get("month", "").split("-"))
+        first = date(year, month, 1)
+    except ValueError:
+        first = today.replace(day=1)
+
+    start = first - timedelta(days=first.weekday())
+    end = start + timedelta(days=41)
+    by_day = {}
+    for task in tasks.filter(end_date__range=(start, end)).select_related("project"):
+        by_day.setdefault(task.end_date, []).append(task)
+
+    days = [start + timedelta(days=i) for i in range(42)]
+    prev_month = (first - timedelta(days=1)).replace(day=1)
+    next_month = (first + timedelta(days=32)).replace(day=1)
+    return {
+        "cal_title": f"{MONTHS[first.month - 1]} {first.year}",
+        "cal_prev": prev_month.strftime("%Y-%m"),
+        "cal_next": next_month.strftime("%Y-%m"),
+        "cal_days": [
+            {"date": d, "other": d.month != first.month, "today": d == today, "tasks": by_day.get(d, [])}
+            for d in days
+        ],
+    }
+
 @login_required
 def calendar(request):
-    return render(request, "planner/calendar.html")
+    tasks = Task.objects.filter(workers=request.user).distinct()
+    return render(request, "planner/calendar.html", _calendar_context(request, tasks))
 
 @login_required
 def project_board(request, project_id):
@@ -93,11 +127,17 @@ def project_board(request, project_id):
 
 @login_required
 def project_list(request, project_id):
-    return render(request, "planner/project_list.html", {"project_id": project_id})
+    tasks = (
+        Task.objects.filter(project_id=project_id)
+        .prefetch_related("workers")
+        .order_by("end_date", "id")
+    )
+    return render(request, "planner/project_list.html", {"tasks": tasks, "today": timezone.localdate()})
 
 @login_required
 def project_calendar(request, project_id):
-    return render(request, "planner/project_calendar.html", {"project_id": project_id})
+    tasks = Task.objects.filter(project_id=project_id)
+    return render(request, "planner/project_calendar.html", _calendar_context(request, tasks))
 
 @login_required
 def task_create(request):
@@ -189,3 +229,15 @@ def task_set_status(request, task_id):
     task.completed = (task.completed or timezone.localdate()) if status == "complete" else None
     task.save(update_fields=["status", "completed"])
     return JsonResponse({"id": task.id, "status": task.status})
+
+@login_required
+def knowledge_search(request):
+    query = request.GET.get("q", "").strip()
+    tasks, _ = search_tasks(query) if query else ([], False)
+    context = {
+        "q": query,
+        "tasks": tasks,
+        "projects": search_projects(query) if query else [],
+        "today": timezone.localdate(),
+    }
+    return render(request, "planner/knowledge_search.html", context)

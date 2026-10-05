@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static avatars %}
 
 {% block styles %}<link rel="stylesheet" href="{% static 'css/app.css' %}?v={{ static_version }}">{% endblock %}
 {% block body_class %}app{% endblock %}
@@ -60,7 +60,7 @@
         <small>{{ week_done }} из {{ week_total }} задач закрыто</small>
       </div>
       <div class="me">
-        <span class="avatar">{% if user.first_name %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|first|upper }}{% endif %}</span>
+        {% avatar user %}
         <div class="me-info">
           <b>{{ user.get_full_name|default:user.username }}</b>
           <small>{% if user.telegram_id %}{{ user.telegram_id }}{% else %}{{ user.email }}{% endif %}</small>

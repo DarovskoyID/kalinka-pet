@@ -302,3 +302,12 @@ select[multiple].input { height: 44px; background-image: none; }
 /* ---------- смена статуса перетаскиванием ---------- */
 .col-body:has(.card) .col-empty { display: none; }
 .card.is-saving { opacity: .6; pointer-events: none; }
+
+/* календарь: событие-ссылка на задачу, закрытые — приглушены */
+a.ev { display: block; text-decoration: none; }
+.ev.is-done { opacity: .55; text-decoration: line-through; }
+
+/* страница умного поиска */
+.search--wide { height: 44px; margin-bottom: 8px; }
+.search--wide input { flex: 1; width: auto; font-size: 15px; }
+.search-hint { font-size: 12px; margin: 0 0 20px; }

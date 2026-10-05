@@ -1,4 +1,5 @@
 {% extends "planner/base_app.html" %}
+{% load avatars %}
 
 {% block title %}Мои задачи — Калинка{% endblock %}
 
@@ -8,11 +9,7 @@
   <p>Воскресенье, 27 сентября</p>
 </div>
 <div class="topline-actions">
-  <div class="segmented" role="tablist">
-    <button class="is-active">Все</button>
-    <button>Активные</button>
-    <button>Готовые</button>
-  </div>
+  {% include "partials/my_tasks_tabs.html" %}
   <button class="btn btn-primary" data-open="taskModal">
     <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
   </button>
@@ -46,7 +43,7 @@
     <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
     <span class="due due--late">{{ task.end_date|date:"j b" }}</span>
     {% for worker in task.workers.all %}
-      <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+      {% avatar worker "sm" %}
     {% endfor %}
   </li>
   {% empty %}
@@ -70,7 +67,7 @@
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
         {% for worker in task.workers.all %}
-          <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+          {% avatar worker "sm" %}
         {% endfor %}
     </li>
       {% empty %}
@@ -94,7 +91,7 @@
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
         {% for worker in task.workers.all %}
-          <span class="avatar avatar--sm">{{ worker.first_name|first }}{{ worker.last_name|first }}</span>
+          {% avatar worker "sm" %}
         {% endfor %}
     </li>
       {% empty %}

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.db.models import Count
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
@@ -8,7 +9,7 @@ from tasksManager.forms import PROJECT_COLORS, ProjectForm, TaskForm
 from tasksManager.models import Project
 
 
-PLANNER_PAGES = {"my_tasks", "calendar", "project_board", "project_list", "project_calendar", "task_create",
+PLANNER_PAGES = {"my_tasks", "calendar", "knowledge_search", "project_board", "project_list", "project_calendar", "task_create",
                  "project_create", "task_edit", "project_edit"}
 
 
@@ -34,6 +35,7 @@ def planner(request):
 
     return {
         "project_id": project_id,
+        "project_members": get_user_model().objects.filter(tasks__project_id=project_id).distinct().order_by("first_name", "username") if project_id else [],
         "current_project": current_project,
         "sidebar_projects": Project.objects.annotate(task_count=Count("task")).order_by("title"),
         "my_open_tasks_count": user.tasks.exclude(status="complete").count(),

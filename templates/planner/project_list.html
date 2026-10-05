@@ -1,11 +1,11 @@
 {% extends "planner/project_base.html" %}
+{% load avatars %}
 
 {% block content %}
 <div class="table-wrap">
   <table class="table">
     <thead>
       <tr>
-        <th class="w-check"></th>
         <th>Задача</th>
         <th>Статус</th>
         <th>Приоритет</th>
@@ -15,51 +15,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr data-priority="high">
-        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
-        <td><b>Сверстать страницу тарифов</b></td>
-        <td><span class="status status--created">Создана</span></td>
-        <td><span class="chip chip--high">Высокий</span></td>
-        <td>20 сен</td>
-        <td><span class="due due--late">25 сен</span></td>
-        <td><span class="avatar avatar--xs">ИД</span></td>
+      {% for task in tasks %}
+      <tr class="{% if task.status == 'complete' %}is-done{% endif %}" data-priority="{{ task.priority }}">
+        <td><b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b></td>
+        <td><span class="status status--{{ task.status }}">{{ task.get_status_display }}</span></td>
+        <td><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></td>
+        <td>{{ task.start_date|date:"j b" }}</td>
+        <td><span class="due{% if task.end_date < today and task.status != 'complete' %} due--late{% endif %}">{{ task.end_date|date:"j b" }}</span></td>
+        <td>
+          <div class="avatars">
+            {% for worker in task.workers.all %}
+              {% avatar worker "xs" %}
+            {% endfor %}
+          </div>
+        </td>
       </tr>
-      <tr data-priority="mid">
-        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
-        <td><b>Ревью модели Task</b></td>
-        <td><span class="status status--active">В работе</span></td>
-        <td><span class="chip chip--mid">Средний</span></td>
-        <td>24 сен</td>
-        <td><span class="due">Сегодня</span></td>
-        <td><div class="avatars"><span class="avatar avatar--xs" style="--a: var(--violet)">АК</span><span class="avatar avatar--xs">ИД</span></div></td>
-      </tr>
-      <tr data-priority="high">
-        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
-        <td><b>Лендинг: параллакс секций</b></td>
-        <td><span class="status status--active">В работе</span></td>
-        <td><span class="chip chip--high">Высокий</span></td>
-        <td>26 сен</td>
-        <td><span class="due">28 сен</span></td>
-        <td><span class="avatar avatar--xs">ИД</span></td>
-      </tr>
-      <tr data-priority="mid">
-        <td><label class="check-round"><input type="checkbox"><i></i></label></td>
-        <td><b>REST: эндпоинт списка задач</b></td>
-        <td><span class="status status--inactive">На паузе</span></td>
-        <td><span class="chip chip--mid">Средний</span></td>
-        <td>28 сен</td>
-        <td><span class="due">2 окт</span></td>
-        <td><span class="avatar avatar--xs" style="--a: var(--sky)">ОМ</span></td>
-      </tr>
-      <tr class="is-done" data-priority="mid">
-        <td><label class="check-round"><input type="checkbox" checked><i></i></label></td>
-        <td><b>Модель пользователя</b></td>
-        <td><span class="status status--complete">Готово</span></td>
-        <td><span class="chip chip--mid">Средний</span></td>
-        <td>1 сен</td>
-        <td><span class="due">8 сен</span></td>
-        <td><span class="avatar avatar--xs">ИД</span></td>
-      </tr>
+      {% empty %}
+      <tr><td colspan="6">В проекте пока нет задач</td></tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
