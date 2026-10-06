@@ -5,9 +5,14 @@
 {% block topline %}
 <div class="topline-title">
   <h1>Календарь</h1>
-  <p>Сроки всех ваших проектов</p>
+  <p>Сроки задач всех проектов</p>
 </div>
 <div class="topline-actions">
+  <div class="legend">
+    {% for project in sidebar_projects %}
+    <a href="{% url 'project_calendar' project.id %}"><i style="--c: rgb({{ project.color_Red }}, {{ project.color_Green }}, {{ project.color_Blue }})"></i>{{ project.title }}</a>
+    {% endfor %}
+  </div>
   <button class="btn btn-primary" data-open="taskModal">
     <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
   </button>

@@ -98,8 +98,8 @@ def _calendar_context(request, tasks):
 
 @login_required
 def calendar(request):
-    tasks = Task.objects.filter(workers=request.user).distinct()
-    return render(request, "planner/calendar.html", _calendar_context(request, tasks))
+    # общий календарь: задачи всех проектов
+    return render(request, "planner/calendar.html", _calendar_context(request, Task.objects.all()))
 
 @login_required
 def project_board(request, project_id):
