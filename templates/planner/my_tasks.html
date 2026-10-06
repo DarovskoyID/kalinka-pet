@@ -6,7 +6,7 @@
 {% block topline %}
 <div class="topline-title">
   <h1>Мои задачи</h1>
-  <p>Воскресенье, 27 сентября</p>
+  <p>{{ today_date|date:"l, j E"|capfirst }}</p>
 </div>
 <div class="topline-actions">
   {% include "partials/my_tasks_tabs.html" %}
@@ -17,6 +17,8 @@
 {% endblock %}
 
 {% block content %}
+<div id="taskChecks" data-status-url="{% url 'task_set_status' 0 %}">{% csrf_token %}</div>
+
 <section class="stats">
   <div class="stat"><small>Сегодня</small><b>{{ count_today_must_be_completed }}</b><span>задачи со сроком</span></div>
   <div class="stat stat--warn"><small>Просрочено</small><b>{{ count_expired_tasks }}</b><span>нужно внимание</span></div>
@@ -30,9 +32,11 @@
   <ul class="rows">
   {% for task in expired_tasks %}
   <li class="row">
-    <label class="check-round">
-      <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
+    {% if request.user in task.workers.all %}
+    <label class="check-round" title="Отметить выполненной / вернуть в работу">
+      <input type="checkbox" data-task-id="{{ task.id }}" {% if task.status == "complete" %}checked{% endif %}><i></i>
     </label>
+    {% else %}<span class="check-spacer"></span>{% endif %}
     <div class="row-main">
       <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
       <small>
@@ -42,9 +46,7 @@
     </div>
     <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
     <span class="due due--late">{{ task.end_date|date:"j b" }}</span>
-    {% for worker in task.workers.all %}
-      {% avatar worker "sm" %}
-    {% endfor %}
+    <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
   </li>
   {% empty %}
   <li class="row">Просроченных задач нет</li>
@@ -57,18 +59,18 @@
   <ul class="rows">
       {% for task in today_must_be_completed %}
     <li class="row">
-      <label class="check-round">
-        <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
-      </label>
+      {% if request.user in task.workers.all %}
+    <label class="check-round" title="Отметить выполненной / вернуть в работу">
+      <input type="checkbox" data-task-id="{{ task.id }}" {% if task.status == "complete" %}checked{% endif %}><i></i>
+    </label>
+    {% else %}<span class="check-spacer"></span>{% endif %}
       <div class="row-main">
         <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--sky)"></i>{{ task.project.title }}</small>
       </div>
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
-        {% for worker in task.workers.all %}
-          {% avatar worker "sm" %}
-        {% endfor %}
+        <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
     </li>
       {% empty %}
         <li class="row">задач нет</li>
@@ -81,18 +83,18 @@
   <ul class="rows">
      {% for task in in_work %}
     <li class="row">
-      <label class="check-round">
-        <input type="checkbox" {% if task.status == "complete" %}checked{% endif %}><i></i>
-      </label>
+      {% if request.user in task.workers.all %}
+    <label class="check-round" title="Отметить выполненной / вернуть в работу">
+      <input type="checkbox" data-task-id="{{ task.id }}" {% if task.status == "complete" %}checked{% endif %}><i></i>
+    </label>
+    {% else %}<span class="check-spacer"></span>{% endif %}
       <div class="row-main">
         <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--amber)"></i>{{ task.project.title }}</small>
       </div>
       <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
-        {% for worker in task.workers.all %}
-          {% avatar worker "sm" %}
-        {% endfor %}
+        <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
     </li>
       {% empty %}
         <li class="row">задач нет</li>

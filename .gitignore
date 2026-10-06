@@ -10,3 +10,8 @@ venv/
 .idea/
 
 # UI (не коммитим)
+
+# C++ build
+TaskResolverManagerCPP/build/
+*.pyd
+*.so

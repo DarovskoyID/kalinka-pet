@@ -35,6 +35,23 @@
   document.addEventListener("change", (e) => {
     const cb = e.target.closest(".check-round input"); if (!cb) return;
     cb.closest(".row, tr")?.classList.toggle("is-done", cb.checked);
+
+    // на «Моих задачах» чекбокс сразу меняет статус: выполнена <-> в работе
+    const box = document.getElementById("taskChecks");
+    if (!box || !cb.dataset.taskId) return;
+    cb.disabled = true;
+    fetch(box.dataset.statusUrl.replace("/0/", `/${cb.dataset.taskId}/`), {
+      method: "POST",
+      headers: { "X-CSRFToken": box.querySelector("[name=csrfmiddlewaretoken]").value, "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ status: cb.checked ? "complete" : "active" }),
+    }).then((resp) => {
+      if (!resp.ok) throw new Error(resp.status);
+      location.reload(); // счётчики и группы пересчитываются на сервере
+    }).catch(() => {
+      cb.checked = !cb.checked; cb.disabled = false;
+      cb.closest(".row")?.classList.toggle("is-done", cb.checked);
+      alert("Не удалось сменить статус задачи. Попробуйте ещё раз.");
+    });
   });
 
   /* ---------- фильтры проекта: поиск и приоритет ---------- */
@@ -60,6 +77,14 @@
       col.querySelector(".col-count").textContent = col.querySelectorAll(".card").length;
     });
 
+    // обновляем «Неделю» в сайдбаре без перезагрузки
+    const updateWeek = (w) => {
+      if (!w) return;
+      document.querySelector("[data-week-percent]").textContent = `${w.percent}%`;
+      document.querySelector("[data-week-bar]").style.width = `${w.percent}%`;
+      document.querySelector("[data-week-text]").textContent = `${w.done} из ${w.total} задач закрыто`;
+    };
+
     // сохраняем новый статус; при ошибке возвращаем карточку на место
     async function saveStatus(card, zone, backZone, backNext) {
       const status = zone.dataset.status;
@@ -72,6 +97,7 @@
         });
         if (!resp.ok) throw new Error(resp.status);
         card.dataset.status = status;
+        updateWeek((await resp.json()).week);
         card.classList.toggle("is-done", status === "complete");
       } catch (err) {
         backZone.insertBefore(card, backNext);

@@ -55,9 +55,9 @@
 
     <div class="side-bottom">
       <div class="side-progress">
-        <div class="side-progress-top"><span>Неделя</span><b>{{ week_percent }}%</b></div>
-        <div class="bar"><i style="width: {{ week_percent }}%"></i></div>
-        <small>{{ week_done }} из {{ week_total }} задач закрыто</small>
+        <div class="side-progress-top"><span>Неделя</span><b data-week-percent>{{ week_percent }}%</b></div>
+        <div class="bar"><i data-week-bar style="width: {{ week_percent }}%"></i></div>
+        <small data-week-text>{{ week_done }} из {{ week_total }} задач закрыто</small>
       </div>
       <div class="me">
         {% avatar user %}

@@ -1,0 +1,55 @@
+{% extends "planner/base_app.html" %}
+{% load avatars %}
+
+{% block title %}Умный подбор — Калинка{% endblock %}
+
+{% block topline %}
+<div class="topline-title">
+  <h1>Мои задачи</h1>
+  <p>Умный подбор задач и проектов</p>
+</div>
+<div class="topline-actions">
+  {% include "partials/my_tasks_tabs.html" %}
+  <button class="btn btn-primary" data-open="taskModal">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Новая задача
+  </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="table-wrap">
+<span>Время анализа {{ work_time | floatformat:3 }}</span>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Задача</th>
+        <th>Статус</th>
+        <th>Приоритет</th>
+        <th>Начало</th>
+        <th>Срок</th>
+        <th>Исполнители</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr class="{% if task.status == 'complete' %}is-done{% endif %}" data-priority="{{ task.priority }}">
+        <td><b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b></td>
+        <td><span class="status status--{{ task.status }}">{{ task.get_status_display }}</span></td>
+        <td><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></td>
+        <td>{{ task.start_date|date:"j b" }}</td>
+        <td><span class="due{% if task.end_date < today and task.status != 'complete' %} due--late{% endif %}">{{ task.end_date|date:"j b" }}</span></td>
+        <td>
+          <div class="avatars">
+            {% for worker in task.workers.all %}
+              {% avatar worker "xs" %}
+            {% endfor %}
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">нет задач</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

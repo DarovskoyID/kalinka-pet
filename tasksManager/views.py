@@ -7,8 +7,9 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from tasksManager.forms import STATUS_CHOICES, ProjectForm, TaskForm
-from tasksManager.models import Project, Task
+from tasksManager.models import Project, Task, priorities
 from tasksManager.models import statuses
+from tasksManager.context_processors import week_progress
 from tasksManager.search import search_projects, search_tasks
 
 
@@ -20,14 +21,7 @@ def my_tasks(request):
 
     count_projects = model.objects.filter(workers=request.user).values("project").distinct().count()
 
-    week_start = (today - timedelta(days=today.weekday())).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
-
-    count_completed_tasks_for_the_week = model.objects.filter(
-        status="complete",
-        completed__gte=week_start,
-    ).count()
+    count_completed_tasks_for_the_week = week_progress(request.user)["done"]
 
     today_must_be_completed = model.objects.filter(end_date=today)
     count_today_must_be_completed = today_must_be_completed.count()
@@ -61,6 +55,7 @@ def my_tasks(request):
         "in_work" : in_work,
         "today_must_be_completed" : today_must_be_completed,
         "count_projects" : count_projects,
+        "today_date" : timezone.localdate(),
     }
     return render(request, "planner/my_tasks.html", context)
 
@@ -228,16 +223,26 @@ def task_set_status(request, task_id):
     # дата закрытия нужна для счётчика «Закрыто за неделю»
     task.completed = (task.completed or timezone.localdate()) if status == "complete" else None
     task.save(update_fields=["status", "completed"])
-    return JsonResponse({"id": task.id, "status": task.status})
+    return JsonResponse({"id": task.id, "status": task.status, "week": week_progress(request.user)})
 
 @login_required
-def knowledge_search(request):
-    query = request.GET.get("q", "").strip()
-    tasks, _ = search_tasks(query) if query else ([], False)
+def smart_selection(request):
+    tasks = Task.objects.filter(workers__username=request.user.username).exclude(status="complete")
+    import task_resolver as resolver
+    infos = [
+        resolver.TaskInfo(
+            t.id,
+            priorities[t.priority],
+            (t.end_date - date.today()).days,) for t in tasks
+    ]
+    import time
+    work_time_start = time.perf_counter()
+    order_ids = resolver.resolve_order(infos)
+    work_time= (time.perf_counter() - work_time_start) * 1000
+    by_id = {t.id: t for t in tasks}
+    ordered_tasks = [by_id[t] for t in order_ids]
     context = {
-        "q": query,
-        "tasks": tasks,
-        "projects": search_projects(query) if query else [],
-        "today": timezone.localdate(),
+        "tasks": ordered_tasks,
+        "work_time": work_time,
     }
-    return render(request, "planner/knowledge_search.html", context)
+    return render(request, "planner/smart_selection.html", context)
