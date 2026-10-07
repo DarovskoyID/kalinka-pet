@@ -1,5 +1,5 @@
 {% extends "planner/base_app.html" %}
-{% load avatars %}
+{% load avatars labels %}
 
 {% block title %}Мои задачи — Калинка{% endblock %}
 
@@ -44,7 +44,7 @@
         {{ task.project.title }}
       </small>
     </div>
-    <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+    <span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span>
     <span class="due due--late">{{ task.end_date|date:"j b" }}</span>
     <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
   </li>
@@ -68,7 +68,7 @@
         <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--sky)"></i>{{ task.project.title }}</small>
       </div>
-      <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+      <span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
         <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
     </li>
@@ -92,7 +92,7 @@
         <b><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></b>
         <small><i class="proj" style="--c: var(--amber)"></i>{{ task.project.title }}</small>
       </div>
-      <span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span>
+      <span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span>
       <span class="due">{{ task.end_date|date:"j b" }}</span>
         <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "sm" %}{% endfor %}</div>
     </li>

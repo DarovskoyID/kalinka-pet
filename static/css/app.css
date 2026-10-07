@@ -105,8 +105,8 @@ kbd { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-r
 .status--created { --s: var(--text-3); } .status--active { --s: var(--sky); }
 .status--inactive { --s: var(--amber); } .status--complete { --s: var(--green); color: var(--green); }
 
-.check-round { display: inline-grid; cursor: pointer; }
-.check-round input { position: absolute; opacity: 0; pointer-events: none; }
+.check-round { position: relative; display: inline-grid; cursor: pointer; }
+.check-round input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; pointer-events: none; }
 .check-round i { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--line-2); display: grid; place-items: center; transition: .2s; }
 .check-round:hover i { border-color: var(--green); }
 .check-round input:checked + i { background: var(--green); border-color: var(--green); }

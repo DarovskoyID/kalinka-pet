@@ -1,5 +1,5 @@
 {% extends "planner/project_base.html" %}
-{% load avatars %}
+{% load avatars labels %}
 
 {% block content %}
 <div class="board" id="board" data-status-url="{% url 'task_set_status' 0 %}">
@@ -15,12 +15,10 @@
     <div class="col-body" data-dropzone data-status="created">
         {% for task in queued_tasks %}
       <article class="card" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
-        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
+        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span></div>
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
-            {% for worker in task.workers.all %}
-                {% avatar worker "xs" %}
-            {% endfor %}
+            <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "xs" %}{% endfor %}</div>
         </footer>
       </article>
         {% empty %}
@@ -40,12 +38,10 @@
     <div class="col-body" data-dropzone data-status="active">
         {% for task in in_work %}
       <article class="card" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
-        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
+        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span></div>
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
-            {% for worker in task.workers.all %}
-                {% avatar worker "xs" %}
-            {% endfor %}
+            <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "xs" %}{% endfor %}</div>
         </footer>
       </article>
         {% empty %}
@@ -65,12 +61,10 @@
     <div class="col-body" data-dropzone data-status="complete">
         {%  for task in completed_tasks %}
       <article class="card is-done" draggable="true" data-priority="{{ task.priority }}" data-task-id="{{ task.id }}" data-status="{{ task.status }}">
-        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.get_priority_display }}</span></div>
+        <div class="card-tags"><span class="chip chip--{{ task.priority }}">{{ task.priority|priority_label }}</span></div>
         <h4><a class="task-link" href="{% url 'task_edit' task.id %}?next={{ request.get_full_path|urlencode }}">{{ task.title }}</a></h4>
         <footer class="card-foot"><span class="due">{{ task.end_date|date:"j b" }}</span>
-            {% for worker in task.workers.all %}
-                {% avatar worker "xs" %}
-            {% endfor %}
+            <div class="avatars">{% for worker in task.workers.all %}{% avatar worker "xs" %}{% endfor %}</div>
         </footer>
       </article>
         {% empty %}
